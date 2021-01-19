@@ -6,7 +6,7 @@ function RenderLogin({loggedIn, toggle, logout, name})
   if(loggedIn)
   {
     return(
-      <div class="container">
+      <div className="container">
         <NavItem>
           <NavbarText>Welcome, {name}!</NavbarText>
         </NavItem>
@@ -19,7 +19,7 @@ function RenderLogin({loggedIn, toggle, logout, name})
   else
   {
     return (
-      <div class="container">
+      <div className="container">
         <NavItem>
           <Button color="success" onClick={toggle}>Login</Button>
         </NavItem>
@@ -58,6 +58,7 @@ class Header extends React.Component
       isLoggedIn: true,
       username: this.username.value
     });
+    this.props.login();
     event.preventDefault();
   }
 
@@ -66,6 +67,8 @@ class Header extends React.Component
     this.setState({
       isLoggedIn: false
     });
+
+    this.props.login();
   }
 
   render()
@@ -78,7 +81,7 @@ class Header extends React.Component
             <RenderLogin loggedIn={this.state.isLoggedIn} toggle={this.toggleModal} logout={this.logout} name={this.state.username}/>
           </Nav>
         </Navbar>
-        <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+        <Modal animation={false} isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
           <ModalHeader>Login</ModalHeader>
           <ModalBody>
             <Form onSubmit={this.handleLogin}>
