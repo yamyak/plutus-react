@@ -2,6 +2,9 @@
   margin:0px auto;
   padding:0px auto;
 }
+.container {
+  margin: 0px;
+}
 
 .row-content {
   margin:0px auto;
@@ -17,7 +20,7 @@
 }
 
 .jumbotron {
-  padding: 10px 0px 10px 40px;
+  padding: 20px 20px 10px 20px;
   background: #579ed8 ;
   color:floralwhite;
 }

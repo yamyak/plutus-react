@@ -53,12 +53,14 @@ class Header extends React.Component
 
   handleLogin(event)
   {
+    // TODO: account authentication needs to happen here
+
     this.toggleModal();
     this.setState({
       isLoggedIn: true,
       username: this.username.value
     });
-    this.props.login();
+    this.props.login(this.state.username);
     event.preventDefault();
   }
 
@@ -68,7 +70,7 @@ class Header extends React.Component
       isLoggedIn: false
     });
 
-    this.props.login();
+    this.props.login(null);
   }
 
   render()
@@ -81,7 +83,7 @@ class Header extends React.Component
             <RenderLogin loggedIn={this.state.isLoggedIn} toggle={this.toggleModal} logout={this.logout} name={this.state.username}/>
           </Nav>
         </Navbar>
-        <Modal animation={false} isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+        <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
           <ModalHeader>Login</ModalHeader>
           <ModalBody>
             <Form onSubmit={this.handleLogin}>

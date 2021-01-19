@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from './HeaderComponent';
-import Data from './DataComponent';
+import Portfolio from './PortfolioComponent';
 
 class Main extends React.Component
 {
@@ -8,16 +8,18 @@ class Main extends React.Component
     super(props);
 
     this.state = {
-      isLoggedIn: false
+      isLoggedIn: false,
+      currentUser: null
     };
 
-    this.toggleLoginState = this.toggleLoginState.bind(this);
+    this.setLoginState = this.setLoginState.bind(this);
   }
 
-  toggleLoginState()
+  setLoginState(name)
   {
     this.setState({
-        isLoggedIn: !this.state.isLoggedIn
+      isLoggedIn: !this.state.isLoggedIn,
+      currentUser: name
     });
   }
 
@@ -25,8 +27,8 @@ class Main extends React.Component
   {
     return (
       <div>
-        <Header login={this.toggleLoginState}/>
-        <Data isLoggedIn={this.state.isLoggedIn}/>
+        <Header login={this.setLoginState}/>
+        <Portfolio isLoggedIn={this.state.isLoggedIn} user={this.state.currentUser}/>
       </div>
     );
   }
