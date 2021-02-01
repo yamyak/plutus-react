@@ -3,9 +3,9 @@ const Portfolio = require('./portfolioModel');
 
 const Schema = mongoose.Schema;
 
-const Profile = new Schema(
+const User = new Schema(
   {
-    name: {
+    username: {
       type: String,
       required: true,
       unique: true
@@ -21,4 +21,4 @@ const Profile = new Schema(
   }
 );
 
-module.exports = mongoose.model('Profile', Profile);
+module.exports = mongoose.model('User', User);
