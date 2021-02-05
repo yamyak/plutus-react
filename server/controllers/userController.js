@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 
 createUser = (req, res, next) => {
+  console.log(req.method);
   User.findOne({ username: req.body.username })
   .then((user) => {
     if(user)
@@ -20,6 +21,7 @@ createUser = (req, res, next) => {
   .then((user) => {
     if(user)
     {
+      user.password = ""
       return res.status(200).json({
         success: true,
         data: user,
@@ -33,6 +35,7 @@ createUser = (req, res, next) => {
 getProfile = (req, res, next) => {
   if(!req.session.user)
   {
+    /*
     var authHeader = req.headers.authorization;
     
     if (!authHeader) {
@@ -45,8 +48,9 @@ getProfile = (req, res, next) => {
     var auth = new Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
     var username = auth[0];
     var password = auth[1];
+    */
 
-    User.findOne({ username: username })
+    User.findOne({ username: req.body.username })
     .then((user) => {
       if(user === null)
       {
@@ -54,17 +58,23 @@ getProfile = (req, res, next) => {
         err.status = 403;
         next(err);
       }
-      else if(user.password !== password)
+      else if(user.password !== req.body.password)
       {
         var err = new Error('Your password is incorrect!');
         err.status = 403;
         next(err);
       }
-      else if(user.username === username && user.password === password)
+      else if(user.username === req.body.username && user.password === req.body.password)
       {
+        user.password = "";
         req.session.user = 'authenticated';
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/plain');
+        res.json({
+          success: true,
+          data: user,
+          message: 'Logged in'
+        });
         res.end('You are now logged in!')
       }
     })
@@ -74,6 +84,10 @@ getProfile = (req, res, next) => {
   {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
+    res.json({
+      success: false,
+      message: 'Already logged in'
+    });
     res.end('You are already logged in!');
   }
 };
@@ -85,6 +99,10 @@ closeProfile = (req, res, next) => {
     res.clearCookie('session-id');
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
+    res.json({
+      success: true,
+      message: 'Logged out'
+    });
     res.end('You are now logged out!')
   }
   else 

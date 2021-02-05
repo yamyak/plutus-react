@@ -15,11 +15,11 @@ class Main extends React.Component
     this.setLoginState = this.setLoginState.bind(this);
   }
 
-  setLoginState(name)
+  setLoginState(user)
   {
     this.setState({
       isLoggedIn: !this.state.isLoggedIn,
-      currentUser: name
+      currentUser: user
     });
   }
 

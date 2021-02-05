@@ -13,13 +13,14 @@ const app = express();
 const apiPort = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({origin: 'http://localhost:3006', credentials: true}));
 app.use(bodyParser.json());
 app.use(session({
   name: 'session-id',
   secret: '12345-67890-09876-54321',
   saveUninitialized: false,
   resave: false,
+  cookie: {},
   store: new FileStore()
 }));
 
@@ -55,11 +56,14 @@ app.use(function (err, req, res, next) {
   {
     err.status = 400;
   }
-  res.status(err.status).send({error: err.message});
+  res.status(err.status).send({
+    success: false,
+    error: err.message
+  });
 });
 
 app.get('/test', function(req, res){
-  res.send("Test page");
+  res.send('Test page');
 });
 
 app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
