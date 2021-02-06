@@ -42,34 +42,6 @@ createPortfolio = (req, res, next) => {
   .catch((err) => next(err));
 };
 
-/*
-getPortfolio = (req, res) => {
-  Profile.findOne({ name: req.body.name })
-  .then((profile) => {
-    if(!profile)
-    {
-      return res.status(400).json({
-        success: false,
-        message: 'Portfolio not found'
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      data: profile,
-      message: 'Portfolio data retrieved'
-    });
-  })
-  .catch((err) => {
-    return res.status(400).json({
-      success: false,
-      error: err,
-      message: 'Portfolio retrieval failed'
-    });
-  });
-}
-*/
-
 module.exports = {
   createPortfolio
 };

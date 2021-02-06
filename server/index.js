@@ -29,7 +29,6 @@ app.use('/', userRouter);
 
 function auth (req, res, next) 
 {
-  console.log(req.session);
   if(!req.session.user) 
   {
     var err = new Error('You are not logged in 1!');

@@ -29,7 +29,7 @@ class Data extends React.Component
             {title: "Dividend", field: "dividend", type: "numeric"},
             {title: "Score", field: "score", type: "numeric"}
           ]}
-          data={this.props.data[this.props.index]}
+          data={this.props.data[this.props.index].stocks}
           title="Stock Table"/>
         </div>
       );

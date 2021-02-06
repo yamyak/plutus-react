@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { Jumbotron, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input} from 'reactstrap';
 import Data from './DataComponent';
 
-function RenderSelection({index, portfolios}) 
+function RenderSelection({index, portfolios, select}) 
 {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const toggle = () => setDropdownOpen(prevState => !prevState);
 
   if(portfolios.length > 0)
   {
-    const ports = portfolios.map((portfolio) => {
+    const ports = portfolios.map((portfolio, index) => {
       return (
-        <DropdownItem>{portfolio.name}</DropdownItem>
+        <DropdownItem onClick={() => select(index)}>{portfolio.name}</DropdownItem>
       );
     });
 
@@ -51,12 +51,20 @@ class Portfolio extends React.Component
 
     this.toggleCreateModal = this.toggleCreateModal.bind(this);
     this.handleCreate = this.handleCreate.bind(this);
+    this.dropdownSelect = this.dropdownSelect.bind(this);
   }
 
   toggleCreateModal()
   {
     this.setState({
       isCreateModalOpen: !this.state.isCreateModalOpen
+    });
+  }
+
+  dropdownSelect(indexNew)
+  {
+    this.setState({
+      index: indexNew
     });
   }
 
@@ -70,6 +78,7 @@ class Portfolio extends React.Component
         headers: {
           "Content-Type": "application/json"
         },
+        credentials: "include",
         body: JSON.stringify({
           id: this.props.user._id,
           name: this.name.value
@@ -77,10 +86,12 @@ class Portfolio extends React.Component
       })
       .then(res => res.json())
       .then(res => {
-        console.log(res);
         if(res.success === true)
         { 
-          this.props.user = res.data;
+          this.props.setData(res.data);
+          this.setState({
+            index: res.data.portfolios.length - 1
+          });
         }
       });
     }
@@ -96,7 +107,7 @@ class Portfolio extends React.Component
       return (
         <div>
           <Jumbotron>
-            <RenderSelection index={this.state.index} portfolios={this.props.user.portfolios}/>
+            <RenderSelection index={this.state.index} portfolios={this.props.user.portfolios} select={this.dropdownSelect}/>
             <p className="lead">
               <Button color="warning" onClick={this.toggleCreateModal}>Add New Portfolio</Button>
             </p>

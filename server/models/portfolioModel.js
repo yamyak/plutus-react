@@ -18,4 +18,4 @@ const Portfolio = new Schema(
   }
 );
 
-module.exports = Portfolio;
+module.exports = mongoose.model('Portfolio', Portfolio);

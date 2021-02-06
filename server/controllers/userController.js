@@ -14,7 +14,7 @@ createUser = (req, res, next) => {
       return User.create({
         username: req.body.username,
         password: req.body.password
-      });
+      }).populate('portfolios');
     }
   })
   .then((user) => {
@@ -34,22 +34,7 @@ createUser = (req, res, next) => {
 getProfile = (req, res, next) => {
   if(!req.session.user)
   {
-    /*
-    var authHeader = req.headers.authorization;
-    
-    if (!authHeader) {
-      var err = new Error('Username and password needed to log in!');
-      res.setHeader('WWW-Authenticate', 'Basic');
-      err.status = 401;
-      return next(err);
-    }
-
-    var auth = new Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
-    var username = auth[0];
-    var password = auth[1];
-    */
-
-    User.findOne({ username: req.body.username })
+    User.findOne({ username: req.body.username }).populate('portfolios')
     .then((user) => {
       if(user === null)
       {
@@ -65,9 +50,9 @@ getProfile = (req, res, next) => {
       }
       else if(user.username === req.body.username && user.password === req.body.password)
       {
-        console.log("got in");
         user.password = "";
         req.session.user = 'authenticated';
+        req.session.save();
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/plain');
         res.json({
@@ -75,7 +60,6 @@ getProfile = (req, res, next) => {
           data: user,
           message: 'Logged in'
         });
-        console.log(req);
         res.end('You are now logged in!')
       }
     })

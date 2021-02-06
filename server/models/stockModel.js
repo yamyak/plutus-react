@@ -45,4 +45,4 @@ const Stock = new Schema(
   }
 );
 
-module.exports = Stock;
+module.exports = mongoose.model('Stock', Stock);
