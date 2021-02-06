@@ -1,7 +1,6 @@
 const User = require('../models/userModel');
 
 createUser = (req, res, next) => {
-  console.log(req.method);
   User.findOne({ username: req.body.username })
   .then((user) => {
     if(user)

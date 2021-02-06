@@ -9,7 +9,7 @@ const Portfolio = new Schema(
       type: String,
       required: true
     },
-    stocks: [ Stock ]
+    stocks: [ Schema.ObjectId ]
   },
   {
     timestamps: true

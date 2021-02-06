@@ -10,7 +10,7 @@ function RenderLogin({loggedIn, toggleLogin, toggleCreate, logout, name})
         <NavItem>
           <NavbarText>Welcome, {name}!</NavbarText>
         </NavItem>
-        <div class="divider"/>
+        <div className="divider"/>
         <NavItem>
           <Button color="danger" onClick={logout}>Logout</Button>
         </NavItem>
@@ -24,7 +24,7 @@ function RenderLogin({loggedIn, toggleLogin, toggleCreate, logout, name})
         <NavItem>
           <Button color="success" onClick={toggleLogin}>Login</Button>
         </NavItem>
-        <div class="divider"/>
+        <div className="divider"/>
         <NavItem>
           <Button color="success" onClick={toggleCreate}>Create Account</Button>
         </NavItem>
@@ -141,8 +141,6 @@ class Header extends React.Component
         this.props.login(null);
       }
     });
-
-    
   }
 
   render()

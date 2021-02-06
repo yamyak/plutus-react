@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { Jumbotron, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { Jumbotron, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input} from 'reactstrap';
 import Data from './DataComponent';
 
-function RenderSelection({found, portfolios}) 
+function RenderSelection({index, portfolios}) 
 {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const toggle = () => setDropdownOpen(prevState => !prevState);
 
-  if(found)
+  if(portfolios.length > 0)
   {
     const ports = portfolios.map((portfolio) => {
       return (
-        <DropdownItem>{portfolio}</DropdownItem>
+        <DropdownItem>{portfolio.name}</DropdownItem>
       );
     });
 
@@ -20,7 +20,7 @@ function RenderSelection({found, portfolios})
     return (
       <div className="container" style={{ maxWidth: "100%" }}>
         <div className="row">
-          <p className="lead">Current Portfolio: </p>
+          <p className="lead">Current Portfolio: {portfolios[index].name}</p>
           <Dropdown className="ml-auto" isOpen={dropdownOpen} toggle={toggle}>
             <DropdownToggle caret>Pick a Portfolio</DropdownToggle>
             <DropdownMenu>
@@ -41,23 +41,77 @@ function RenderSelection({found, portfolios})
 
 class Portfolio extends React.Component
 {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      index: 0,
+      isCreateModalOpen: false,
+    };
+
+    this.toggleCreateModal = this.toggleCreateModal.bind(this);
+    this.handleCreate = this.handleCreate.bind(this);
+  }
+
+  toggleCreateModal()
+  {
+    this.setState({
+      isCreateModalOpen: !this.state.isCreateModalOpen
+    });
+  }
+
+  handleCreate(event)
+  {
+    /*
+    if(this.password1.value === this.password2.value)
+    {
+      console.log("Sending account creation request");
+      fetch("http://localhost:3000/signup", {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: this.username.value,
+          password: this.password1.value
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log(res);
+      });
+    }
+    */
+
+    this.toggleCreateModal();
+    event.preventDefault();
+  }
+
   render()
   {
     if(this.props.isLoggedIn)
     {
-      // TODO: need to retrieve portfolio data here
-      const found = true;
-      const list = ['PORT1', 'PORT2', 'PORT3', 'PORT4' ];
-
       return (
         <div>
           <Jumbotron>
-            <RenderSelection found={found} portfolios={list}/>
+            <RenderSelection index={this.state.index} portfolios={this.props.user.portfolios}/>
             <p className="lead">
               <Button color="warning">Add New Portfolio</Button>
             </p>
           </Jumbotron>
-          <Data isLoggedIn={this.props.isLoggedIn}/>
+          <Data index={this.state.index} data={this.props.user.portfolios}/>
+          <Modal isOpen={this.state.isCreateModalOpen} toggle={this.toggleCreateModal}>
+            <ModalHeader>Create Your New Portfolio</ModalHeader>
+            <ModalBody>
+              <Form onSubmit={this.handleCreate}>
+                <FormGroup>
+                  <Label htmlFor="name">Name</Label>
+                  <Input type="text" id="name" name="name" innerRef={(input) => this.name = input}/>
+                </FormGroup>
+                <Button type="submit" value="submit" color="primary">Submit</Button>
+              </Form>
+            </ModalBody>
+          </Modal>
         </div>
       );
     }
