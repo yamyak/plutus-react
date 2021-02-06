@@ -1,42 +1,48 @@
+const User = require('../models/userModel');
 const Portfolio = require('../models/portfolioModel');
 
-createPortfolio = (req, res) => {
-  const body = req.body;
-  if(!body)
-  {
-    return res.status(400).json({
-      success: false,
-      message: 'Please provide a portfolio'
-    });
-  }
-
-  const portfolio = new Portfolio(body);
-  if(!portfolio)
-  {
-    return res.status(400).json({
-      success: false,
-      error: err,
-      message: 'Portfolio creation failed'
-    });
-  }
-
-  portfolio.save()
-  .then(() => {
-    return res.status(201).json({
-      success: true,
-      id: profile._id,
-      message: 'Portfolio successfully created'
-    });
+createPortfolio = (req, res, next) => {
+  Portfolio.create({
+    name: req.body.name,
   })
-  .catch((err) => {
-    return res.status(400).json({
-      success: false,
-      error: err,
-      message: 'Portfolio creation failed'
-    });
-  });
-}
+  .then((port) => {
+    if(port)
+    {
+      User.findOneAndUpdate(
+        { _id: req.body.id },
+        { $push: { portfolios: port._id } },
+        { new: true }
+      ).populate('portfolios')
+      .then((user) => {
+        if(user)
+        {
+          user.password = ""
+          return res.status(200).json({
+            success: true,
+            data: user,
+            message: 'Portfolio successfully created'
+          });
+        }
+        else
+        {
+          var err = new Error('Current user does not exist');
+          err.status = 403;
+          next(err);
+        }
+      })
+      .catch((err) => next(err));
+    }
+    else
+    {
+      var err = new Error('Unable to create portfolio ' + req.body.name);
+      err.status = 403;
+      next(err);
+    }
+  })
+  .catch((err) => next(err));
+};
 
+/*
 getPortfolio = (req, res) => {
   Profile.findOne({ name: req.body.name })
   .then((profile) => {
@@ -62,4 +68,8 @@ getPortfolio = (req, res) => {
     });
   });
 }
+*/
 
+module.exports = {
+  createPortfolio
+};

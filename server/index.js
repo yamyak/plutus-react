@@ -5,6 +5,7 @@ const FileStore = require('session-file-store')(session);
 const cors = require('cors')
 
 const userRouter = require('./routes/userRoutes');
+const portfolioRouter = require('./routes/portfolioRoutes');
 
 const db = require('./db/dbConnect');
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -28,9 +29,10 @@ app.use('/', userRouter);
 
 function auth (req, res, next) 
 {
+  console.log(req.session);
   if(!req.session.user) 
   {
-    var err = new Error('You are not logged in!');
+    var err = new Error('You are not logged in 1!');
     err.status = 403;
     return next(err);
   }
@@ -42,7 +44,7 @@ function auth (req, res, next)
     }
     else 
     {
-      var err = new Error('You are not logged in!');
+      var err = new Error('You are not logged in 2!');
       err.status = 403;
       return next(err);
     }
@@ -50,6 +52,8 @@ function auth (req, res, next)
 }
 
 app.use(auth);
+
+app.use('/', portfolioRouter);
 
 app.use(function (err, req, res, next) {
   if(!err.status)

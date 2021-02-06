@@ -62,26 +62,28 @@ class Portfolio extends React.Component
 
   handleCreate(event)
   {
-    /*
-    if(this.password1.value === this.password2.value)
+    if(this.name.value)
     {
-      console.log("Sending account creation request");
-      fetch("http://localhost:3000/signup", {
+      console.log("Sending portfolio creation request");
+      fetch("http://localhost:3000/add", {
         method: 'POST',
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          username: this.username.value,
-          password: this.password1.value
+          id: this.props.user._id,
+          name: this.name.value
         })
       })
       .then(res => res.json())
       .then(res => {
         console.log(res);
+        if(res.success === true)
+        { 
+          this.props.user = res.data;
+        }
       });
     }
-    */
 
     this.toggleCreateModal();
     event.preventDefault();
@@ -96,7 +98,7 @@ class Portfolio extends React.Component
           <Jumbotron>
             <RenderSelection index={this.state.index} portfolios={this.props.user.portfolios}/>
             <p className="lead">
-              <Button color="warning">Add New Portfolio</Button>
+              <Button color="warning" onClick={this.toggleCreateModal}>Add New Portfolio</Button>
             </p>
           </Jumbotron>
           <Data index={this.state.index} data={this.props.user.portfolios}/>

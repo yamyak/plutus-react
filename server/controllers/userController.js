@@ -65,6 +65,7 @@ getProfile = (req, res, next) => {
       }
       else if(user.username === req.body.username && user.password === req.body.password)
       {
+        console.log("got in");
         user.password = "";
         req.session.user = 'authenticated';
         res.statusCode = 200;
@@ -74,6 +75,7 @@ getProfile = (req, res, next) => {
           data: user,
           message: 'Logged in'
         });
+        console.log(req);
         res.end('You are now logged in!')
       }
     })

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Stock = require('./stockModel');
 
 const Schema = mongoose.Schema;
 
@@ -9,7 +8,10 @@ const Portfolio = new Schema(
       type: String,
       required: true
     },
-    stocks: [ Schema.ObjectId ]
+    stocks: [{ 
+      type: Schema.Types.ObjectId,
+      ref: 'Stock'
+    }]
   },
   {
     timestamps: true
