@@ -15,7 +15,6 @@ function RenderSelection({index, portfolios, select})
       );
     });
 
-    // TODO: need to add dropdown selection functionality
     // TODO: need to add ids to dropdown elements
     return (
       <div className="container" style={{ maxWidth: "100%" }}>
@@ -73,7 +72,7 @@ class Portfolio extends React.Component
     if(this.name.value)
     {
       console.log("Sending portfolio creation request");
-      fetch("http://localhost:3000/add", {
+      fetch("http://localhost:3000/create", {
         method: 'POST',
         headers: {
           "Content-Type": "application/json"

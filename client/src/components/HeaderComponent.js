@@ -1,5 +1,6 @@
 import React from 'react';
 import { Navbar, NavbarText, NavbarBrand, Nav, NavItem, Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input } from 'reactstrap';
+import { createAccount, accountLogOut, accountLogIn } from '../connections/BackendConnection';
 
 function RenderLogin({loggedIn, toggleLogin, toggleCreate, logout, name}) 
 {    
@@ -49,14 +50,7 @@ class Header extends React.Component
     this.toggleCreateModal = this.toggleCreateModal.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleCreate = this.handleCreate.bind(this);
-    this.logout = this.logout.bind(this);
-  }
-
-  toggleLoginModal() 
-  {
-    this.setState({
-      isLoginModalOpen: !this.state.isLoginModalOpen
-    });
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
   toggleCreateModal()
@@ -66,22 +60,28 @@ class Header extends React.Component
     });
   }
 
+  toggleLoginModal() 
+  {
+    this.setState({
+      isLoginModalOpen: !this.state.isLoginModalOpen
+    });
+  }
+
+  handleCreate(event)
+  {
+    if(this.password1.value === this.password2.value)
+    {
+      createAccount(this.username.value, this.password1.value);
+    }
+
+    this.toggleCreateModal();
+    event.preventDefault();
+  }
+
   handleLogin(event)
   {
-    fetch("http://localhost:3000/signin", {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          username: this.username.value,
-          password: this.password.value
-        }),
-        credentials : "include"
-      })
-    .then(res => res.json())
-    .then(res => {
-      if(res.success === true)
+    accountLogIn(this.username.value, this.password.value, (res) => {
+      if(res.success)
       {
         this.setState({
           isLoggedIn: true,
@@ -95,49 +95,15 @@ class Header extends React.Component
     event.preventDefault();
   }
 
-  handleCreate(event)
+  handleLogout()
   {
-    if(this.password1.value === this.password2.value)
-    {
-      console.log("Sending account creation request");
-      fetch("http://localhost:3000/signup", {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          username: this.username.value,
-          password: this.password1.value
-        })
-      })
-      .then(res => res.json())
-      .then(res => {
-        console.log(res);
-      });
-    }
-
-    this.toggleCreateModal();
-    event.preventDefault();
-  }
-
-  logout()
-  {
-    fetch("http://localhost:3000/signout", {
-        method: 'GET',
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials : "include"
-      })
-    .then(res => res.json())
-    .then(res => {
-      if(res.success === true)
+    accountLogOut((res) => {
+      if(res)
       {
         this.setState({
           isLoggedIn: false,
           username: null
         });
-    
         this.props.login(null);
       }
     });
@@ -150,7 +116,7 @@ class Header extends React.Component
         <Navbar dark expand="md">
           <NavbarBrand>Plutus-React</NavbarBrand>
           <Nav className="ml-auto" navbar>
-            <RenderLogin loggedIn={this.state.isLoggedIn} toggleLogin={this.toggleLoginModal} toggleCreate={this.toggleCreateModal} logout={this.logout} name={this.state.username}/>
+            <RenderLogin loggedIn={this.state.isLoggedIn} toggleLogin={this.toggleLoginModal} toggleCreate={this.toggleCreateModal} logout={this.handleLogout} name={this.state.username}/>
           </Nav>
         </Navbar>
         <Modal isOpen={this.state.isLoginModalOpen} toggle={this.toggleLoginModal}>

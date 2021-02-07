@@ -4,6 +4,6 @@ const PortfolioController = require('../controllers/portfolioController');
 
 const router = express.Router();
 
-router.post('/add', PortfolioController.createPortfolio);
+router.post('/create', PortfolioController.createPortfolio);
 
 module.exports = router;
