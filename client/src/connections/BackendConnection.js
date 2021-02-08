@@ -1,4 +1,4 @@
-function createAccount(usernameIn, passwordIn)
+function createUser(usernameIn, passwordIn)
 {
   console.log("Sending account creation request");
   fetch("http://localhost:3000/signup", {
@@ -11,8 +11,8 @@ function createAccount(usernameIn, passwordIn)
       password: passwordIn
     })
   })
-  .then(res => res.json())
-  .then(res => {
+  .then((res) => res.json())
+  .then((res) => {
     return res.success;
   })
   .catch(() => {
@@ -20,26 +20,7 @@ function createAccount(usernameIn, passwordIn)
   });
 };
 
-function accountLogOut(cleanUpFunc)
-{
-  fetch("http://localhost:3000/signout", {
-    method: 'GET',
-    headers: {
-      "Content-Type": "application/json"
-    },
-    credentials : "include"
-  })
-  .then(res => res.json())
-  .then(res => {
-    cleanUpFunc(res.success);
-    return res.success;
-  })
-  .catch(() => {
-    return false;
-  });
-}
-
-function accountLogIn(usernameIn, passwordIn, setDataFunc)
+function userLogin(usernameIn, passwordIn, setDataFunc)
 {
   fetch("http://localhost:3000/signin", {
     method: 'POST',
@@ -52,8 +33,8 @@ function accountLogIn(usernameIn, passwordIn, setDataFunc)
     }),
     credentials : "include"
   })
-  .then(res => res.json())
-  .then(res => {
+  .then((res) => res.json())
+  .then((res) => {
     setDataFunc(res);
     return res.success;
   })
@@ -62,5 +43,69 @@ function accountLogIn(usernameIn, passwordIn, setDataFunc)
   });
 }
 
+function userLogout(cleanUpFunc)
+{
+  fetch("http://localhost:3000/signout", {
+    method: 'GET',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials : "include"
+  })
+  .then((res) => res.json())
+  .then((res) => {
+    cleanUpFunc(res.success);
+    return res.success;
+  })
+  .catch(() => {
+    return false;
+  });
+}
 
-export { createAccount, accountLogOut, accountLogIn };
+function createPortfolio(idIn, nameIn, setDataFunc)
+{
+  console.log("Sending portfolio creation request");
+  fetch("http://localhost:3000/create", {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      id: idIn,
+      name: nameIn
+    })
+  })
+  .then((res) => res.json())
+  .then((res) => {
+    setDataFunc(res);
+    return res.success;
+  })
+  .catch(() => {
+    return false;
+  });
+}
+
+function getPortfolio(idIn, setDataFunc)
+{
+  fetch("http://localhost:3000/get", {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      id: idIn
+    }),
+    credentials : "include"
+  })
+  .then((res) => res.json())
+  .then((res) => {
+    setDataFunc(res);
+    return res.success;
+  })
+  .catch(() => {
+    return false;
+  });
+}
+
+export { createUser, userLogin, userLogout, createPortfolio, getPortfolio };

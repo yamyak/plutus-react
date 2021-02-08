@@ -14,7 +14,7 @@ createUser = (req, res, next) => {
       return User.create({
         username: req.body.username,
         password: req.body.password
-      }).populate('portfolios');
+      });
     }
   })
   .then((user) => {
@@ -60,7 +60,7 @@ getProfile = (req, res, next) => {
           data: user,
           message: 'Logged in'
         });
-        res.end('You are now logged in!')
+        res.end('You are now logged in!');
       }
     })
     .catch((err) => next(err));
@@ -88,7 +88,7 @@ closeProfile = (req, res, next) => {
       success: true,
       message: 'Logged out'
     });
-    res.end('You are now logged out!')
+    res.end('You are now logged out!');
   }
   else 
   {

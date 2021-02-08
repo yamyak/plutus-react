@@ -4,17 +4,9 @@ import { TableIcons } from '../shared/material-icons';
 
 class Data extends React.Component
 {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      data: [{name: "Apple", ticker: "APL", price: 8.52, score: 8.52}]
-    };
-  }
-
   render()
   {
-    if(this.props.data.length > 0)
+    if(this.props.portfolio)
     {
       return (
         <div style={{ maxWidth: "100%" }}>
@@ -29,7 +21,7 @@ class Data extends React.Component
             {title: "Dividend", field: "dividend", type: "numeric"},
             {title: "Score", field: "score", type: "numeric"}
           ]}
-          data={this.props.data[this.props.index].stocks}
+          data={this.props.portfolio.stocks}
           title="Stock Table"/>
         </div>
       );

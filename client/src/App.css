@@ -1,7 +1,8 @@
-.row-header{
+.row-header {
   margin: 0px auto;
   padding: 0px auto;
 }
+
 .container {
   margin: 0px;
 }
@@ -13,7 +14,7 @@
   min-height: 400px;
 }
 
-.footer{
+.footer {
   background-color: #D1C4E9;
   margin: 0px auto;
   padding: 20px 0px 20px 0px;
@@ -21,11 +22,11 @@
 
 .jumbotron {
   padding: 20px 20px 10px 20px;
-  background: #579ed8 ;
+  background: #579ed8;
   color: floralwhite;
 }
 
-address{
+address {
   font-size: 80%;
   margin: 0px;
   color: #0f0f0f;
@@ -44,8 +45,13 @@ address{
   color: red;
 }
 
-.divider{
-  width:10px;
-  height:auto;
-  display:inline-block;
+.divider {
+  width: 10px;
+  height: auto;
+  display: inline-block;
+}
+
+.padup {
+  padding-top: 15px;
+  text-align: center;
 }

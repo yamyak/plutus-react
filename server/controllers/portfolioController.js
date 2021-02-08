@@ -42,6 +42,31 @@ createPortfolio = (req, res, next) => {
   .catch((err) => next(err));
 };
 
+getPortfolio = (req, res, next) => {
+  Portfolio.findOne({ _id: req.body.id }).populate('stocks')
+  .then((port) => {
+    if(port === null)
+    {
+      var err = new Error('Portfolio with id ' + port._id + ' does not exist!');
+      err.status = 403;
+      next(err);
+    }
+    else
+    {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'text/plain');
+      res.json({
+        success: true,
+        data: port,
+        message: 'Portfolio retrieved'
+      });
+      res.end('Portfolio retrieved!');
+    }
+  })
+  .catch((err) => next(err));
+};
+
 module.exports = {
-  createPortfolio
+  createPortfolio,
+  getPortfolio
 };
