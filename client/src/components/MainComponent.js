@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from './HeaderComponent';
 import Portfolio from './PortfolioComponent';
-import { createUser, userLogin, userLogout, createPortfolio, getPortfolio } from '../connections/BackendConnection';
+import { createUser, userLogin, userLogout, createPortfolio, getPortfolio, addStock } from '../connections/BackendConnection';
 
 class Main extends React.Component
 {
@@ -30,15 +30,9 @@ class Main extends React.Component
     userLogin(username, password, (res) => {
       if(res.success)
       {
-        var port = null;
-        if(res.data.portfolios.length > 0)
-        {
-          port = res.data.portfolios[0];
-        }
-
         this.setState({
           currentUser: res.data,
-          currentPortfolio: port
+          currentPortfolio: res.data2
         });
       }
     });
@@ -82,6 +76,19 @@ class Main extends React.Component
     });
   }
 
+  createStock(id, ticker)
+  {
+    addStock(id, ticker, (res) => {
+      if(res.success)
+      {
+        console.log(res);
+        this.setState({
+          currentPortfolio: res.data
+        });
+      }
+    });
+  }
+
   render()
   {
     return (
@@ -97,6 +104,7 @@ class Main extends React.Component
           portfolio={this.state.currentPortfolio}
           create={this.createPort}
           set={this.setPortfolio}
+          add={this.createStock}
         />
       </div>
     );

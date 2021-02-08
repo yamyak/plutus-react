@@ -51,6 +51,7 @@ class Portfolio extends React.Component
     this.toggleCreateModal = this.toggleCreateModal.bind(this);
     this.handleCreate = this.handleCreate.bind(this);
     this.toggleAddModal = this.toggleAddModal.bind(this);
+    this.handleAdd = this.handleAdd.bind(this);
     this.dropdownSelect = this.dropdownSelect.bind(this);
   }
 
@@ -83,8 +84,11 @@ class Portfolio extends React.Component
   {
     if(this.ticker.value)
     {
-
+      this.props.add(this.props.portfolio._id, this.ticker.value);
     }
+
+    this.toggleAddModal();
+    event.preventDefault();
   }
 
   dropdownSelect(id)

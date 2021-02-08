@@ -6,31 +6,38 @@ const Stock = new Schema(
   {
     name: {
       type: String,
+      required: true
     },
     ticker: {
       type: String,
       required: true
     },
-    Industry: {
+    industry: {
       type: String,
+      required: true
     },
-    Sector: {
+    sector: {
       type: String,
+      required: true
     },
     price: {
       type: Number,
       min: 0,
+      required: true
     },
     peratio: {
       type: Number,
       min: 0,
+      required: true
     },
     dividend: {
       type: Number,
       min: 0,
+      required: true
     },
     score: {
       type: Number,
+      required: true
     }
   },
   {

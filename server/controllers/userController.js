@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const Portfolio = require('../models/portfolioModel');
 
 createUser = (req, res, next) => {
   User.findOne({ username: req.body.username })
@@ -55,12 +56,34 @@ getProfile = (req, res, next) => {
         req.session.save();
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/plain');
-        res.json({
-          success: true,
-          data: user,
-          message: 'Logged in'
-        });
-        res.end('You are now logged in!');
+
+        if(user.portfolios.length > 0 && user.portfolios[0].stocks.length > 0)
+        {
+          Portfolio.findOne({ _id: user.portfolios[0]._id }).populate('stocks')
+          .then((port) => {
+            if(port !== null)
+            {
+              res.json({
+                success: true,
+                data: user,
+                data2: port,
+                message: 'Logged in'
+              });
+              res.end('You are now logged in!');
+            }
+          })
+          .catch((err) => next(err));
+        }
+        else
+        {
+          res.json({
+            success: true,
+            data: user,
+            data2: null,
+            message: 'Logged in'
+          });
+          res.end('You are now logged in!');
+        }   
       }
     })
     .catch((err) => next(err));

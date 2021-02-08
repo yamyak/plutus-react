@@ -108,4 +108,28 @@ function getPortfolio(idIn, setDataFunc)
   });
 }
 
-export { createUser, userLogin, userLogout, createPortfolio, getPortfolio };
+function addStock(idIn, tickerIn, setDataFunc)
+{
+  console.log("Sending stock creation request");
+  fetch("http://localhost:3000/add", {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      id: idIn,
+      ticker: tickerIn
+    })
+  })
+  .then((res) => res.json())
+  .then((res) => {
+    setDataFunc(res);
+    return res.success;
+  })
+  .catch(() => {
+    return false;
+  });
+}
+
+export { createUser, userLogin, userLogout, createPortfolio, getPortfolio, addStock };

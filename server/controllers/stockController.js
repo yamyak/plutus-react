@@ -3,7 +3,14 @@ const Stock = require('../models/stockModel');
 
 addStock = (req, res, next) => {
   Stock.create({
+    name: "name",
     ticker: req.body.ticker,
+    industry: "industry",
+    sector: "sector",
+    price: 0,
+    peratio: 0,
+    dividend: 0,
+    score: 0
   })
   .then((stock) => {
     if(stock)
