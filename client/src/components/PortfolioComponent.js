@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Jumbotron, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input} from 'reactstrap';
 import Data from './DataComponent';
+import { createPortfolio, getPortfolio, addStock } from '../connections/BackendConnection';
 
 function RenderSelection({current, portfolios, select}) 
 {
@@ -44,56 +45,100 @@ class Portfolio extends React.Component
     super(props);
 
     this.state = {
-      isCreateModalOpen: false,
-      isAddModalOpen: false
+      isCreatePortModalOpen: false,
+      isAddStockModalOpen: false
     };
 
-    this.toggleCreateModal = this.toggleCreateModal.bind(this);
-    this.handleCreate = this.handleCreate.bind(this);
-    this.toggleAddModal = this.toggleAddModal.bind(this);
-    this.handleAdd = this.handleAdd.bind(this);
+    this.toggleCreatePortModal = this.toggleCreatePortModal.bind(this);
+    this.handleCreatePort = this.handleCreatePort.bind(this);
+    this.toggleAddStockModal = this.toggleAddStockModal.bind(this);
+    this.handleAddStock = this.handleAddStock.bind(this);
     this.dropdownSelect = this.dropdownSelect.bind(this);
   }
 
-  toggleCreateModal()
+  toggleCreatePortModal()
   {
     this.setState({
-      isCreateModalOpen: !this.state.isCreateModalOpen
+      isCreatePortModalOpen: !this.state.isCreatePortModalOpen
     });
   }
 
-  handleCreate(event)
+  handleCreatePort(event)
   {
     if(this.name.value)
     {
-      this.props.create(this.props.user._id, this.name.value);
+      createPortfolio(this.props.user._id, this.name.value)
+      .then((res) => {
+        if(res.success)
+        {
+          this.props.create(res.profile);
+          this.toggleCreatePortModal();
+        }
+        else
+        {
+          console.log('Portfolio creation failed');  
+        }
+      })
+      .catch(() => {
+        console.log('Portfolio creation failed');
+      });
     }
-
-    this.toggleCreateModal();
+    else
+    {
+      console.log('No portfolio name provided');
+    }
     event.preventDefault();
   }
 
-  toggleAddModal()
+  toggleAddStockModal()
   {
     this.setState({
-      isAddModalOpen: !this.state.isAddModalOpen
+      isAddStockModalOpen: !this.state.isAddStockModalOpen
     });
   }
 
-  handleAdd(event)
+  handleAddStock(event)
   {
     if(this.ticker.value)
     {
-      this.props.add(this.props.portfolio._id, this.ticker.value);
+      addStock(this.props.portfolio._id, this.ticker.value)
+      .then((res) => {
+        if(res.success)
+        {
+          this.props.add(res.portfolio);
+          this.toggleAddStockModal();
+        }
+        else
+        {
+          console.log('Stock addition failed');  
+        }
+      })
+      .catch(() => {
+        console.log('Stock addition failed');
+      });
     }
-
-    this.toggleAddModal();
+    else
+    {
+      console.log('No stock ticker value provided');
+    }
     event.preventDefault();
   }
 
   dropdownSelect(id)
   {
-    this.props.set(id);
+    getPortfolio(id).then((res) => {
+      if(res.success)
+      {
+        this.props.set(res.portfolio);
+      }
+      else
+      {
+        console.log('Portfolio retrieval failed');  
+      }
+    })
+    .catch(() => {
+      console.log('Portfolio retrieval failed');
+    });
   }
 
   render()
@@ -105,19 +150,19 @@ class Portfolio extends React.Component
           <Jumbotron>
             <RenderSelection current={this.props.portfolio} portfolios={this.props.user.portfolios} select={this.dropdownSelect}/>
             <p className="lead">
-              <Button color="warning" onClick={this.toggleCreateModal}>Create New Portfolio</Button>
+              <Button color="warning" onClick={this.toggleCreatePortModal}>Create New Portfolio</Button>
             </p>
           </Jumbotron>
           <Data portfolio={this.props.portfolio}/>
           {this.props.portfolio !== null && 
             <div className="padup">
-              <Button color="success" onClick={this.toggleAddModal}>Add New Stock</Button>
+              <Button color="success" onClick={this.toggleAddStockModal}>Add New Stock</Button>
             </div>
           }
-          <Modal isOpen={this.state.isCreateModalOpen} toggle={this.toggleCreateModal}>
-            <ModalHeader>Create Your New Portfolio</ModalHeader>
+          <Modal isOpen={this.state.isCreatePortModalOpen} toggle={this.toggleCreatePortModal}>
+            <ModalHeader toggle={this.toggleCreatePortModal}>Create Your New Portfolio</ModalHeader>
             <ModalBody>
-              <Form onSubmit={this.handleCreate}>
+              <Form onSubmit={this.handleCreatePort}>
                 <FormGroup>
                   <Label htmlFor="name">Name</Label>
                   <Input type="text" id="name" name="name" innerRef={(input) => this.name = input}/>
@@ -126,10 +171,10 @@ class Portfolio extends React.Component
               </Form>
             </ModalBody>
           </Modal>
-          <Modal isOpen={this.state.isAddModalOpen} toggle={this.toggleAddModal}>
-            <ModalHeader>Add New Stock</ModalHeader>
+          <Modal isOpen={this.state.isAddStockModalOpen} toggle={this.toggleAddStockModal}>
+            <ModalHeader toggle={this.toggleAddStockModal}>Add New Stock</ModalHeader>
             <ModalBody>
-              <Form onSubmit={this.handleAdd}>
+              <Form onSubmit={this.handleAddStock}>
                 <FormGroup>
                   <Label htmlFor="ticker">Ticker</Label>
                   <Input type="text" id="ticker" name="ticker" innerRef={(input) => this.ticker = input}/>

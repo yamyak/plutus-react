@@ -25,7 +25,7 @@ addStock = (req, res, next) => {
         {
           return res.status(200).json({
             success: true,
-            data: port,
+            portfolio: port,
             message: 'Stock successfully created'
           });
         }

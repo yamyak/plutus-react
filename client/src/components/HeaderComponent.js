@@ -1,5 +1,6 @@
 import React from 'react';
 import { Navbar, NavbarText, NavbarBrand, Nav, NavItem, Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input } from 'reactstrap';
+import { createUser, userLogin, userLogout } from '../connections/BackendConnection';
 
 function RenderLogin({user, toggleCreate, toggleLogin, logout}) 
 {    
@@ -47,6 +48,7 @@ class Header extends React.Component
     this.toggleLoginModal = this.toggleLoginModal.bind(this);
     this.handleCreate = this.handleCreate.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
   toggleCreateModal()
@@ -67,19 +69,66 @@ class Header extends React.Component
   {
     if(this.password1.value === this.password2.value)
     {
-      this.props.create(this.username.value, this.password1.value);
+      createUser(this.username.value, this.password1.value)
+      .then((res) => {
+        if(res.success)
+        {
+          console.log('Account creation successful');
+          this.toggleCreateModal();
+        }
+        else
+        {
+          console.log('Account creation failed');  
+        }
+      })
+      .catch(() => {
+        console.log('Account creation failed');
+      });
     }
-
-    this.toggleCreateModal();
+    else
+    {
+      console.log('Passwords do not match');
+    }
     event.preventDefault();
   }
 
   handleLogin(event)
   {
-    this.props.login(this.username.value, this.password.value);
-
-    this.toggleLoginModal();
+    userLogin(this.username.value, this.password.value)
+    .then((res) => {
+      if(res.success)
+      {
+        this.props.login(res.profile, res.portfolio);
+        this.toggleLoginModal();
+      }
+      else
+      {
+        console.log('Account login failed');  
+      }
+    })
+    .catch(() => {
+      console.log('Account login failed');
+    });
     event.preventDefault();
+  }
+
+  handleLogout()
+  {
+    console.log('test1')
+    userLogout().then((res) => {
+      console.log('test2')
+      if(res.success)
+      {
+        this.props.logout();
+      }
+      else
+      {
+        console.log('Account logout failed');  
+      }
+    })
+    .catch(() => {
+      console.log('Account logout failed');
+    });
   }
 
   render()
@@ -93,12 +142,12 @@ class Header extends React.Component
               user={this.props.user} 
               toggleCreate={this.toggleCreateModal} 
               toggleLogin={this.toggleLoginModal} 
-              logout={this.props.logout}
+              logout={this.handleLogout}
             />
           </Nav>
         </Navbar>
         <Modal isOpen={this.state.isCreateModalOpen} toggle={this.toggleCreateModal}>
-          <ModalHeader>Create Your Account</ModalHeader>
+          <ModalHeader toggle={this.toggleCreateModal}>Create Your Account</ModalHeader>
           <ModalBody>
             <Form onSubmit={this.handleCreate}>
               <FormGroup>
@@ -118,7 +167,7 @@ class Header extends React.Component
           </ModalBody>
         </Modal>
         <Modal isOpen={this.state.isLoginModalOpen} toggle={this.toggleLoginModal}>
-          <ModalHeader>Login</ModalHeader>
+          <ModalHeader toggle={this.toggleLoginModal}>Login</ModalHeader>
           <ModalBody>
             <Form onSubmit={this.handleLogin}>
               <FormGroup>

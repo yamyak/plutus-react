@@ -24,7 +24,7 @@ createUser = (req, res, next) => {
       user.password = ""
       return res.status(200).json({
         success: true,
-        data: user,
+        profile: user,
         message: 'Account successfully created'
       });
     }
@@ -65,8 +65,8 @@ getProfile = (req, res, next) => {
             {
               res.json({
                 success: true,
-                data: user,
-                data2: port,
+                profile: user,
+                portfolio: port,
                 message: 'Logged in'
               });
               res.end('You are now logged in!');

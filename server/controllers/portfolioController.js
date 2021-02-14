@@ -19,7 +19,7 @@ createPortfolio = (req, res, next) => {
           user.password = ""
           return res.status(200).json({
             success: true,
-            data: user,
+            profile: user,
             message: 'Portfolio successfully created'
           });
         }
@@ -57,7 +57,7 @@ getPortfolio = (req, res, next) => {
       res.setHeader('Content-Type', 'text/plain');
       res.json({
         success: true,
-        data: port,
+        portfolio: port,
         message: 'Portfolio retrieved'
       });
       res.end('Portfolio retrieved!');

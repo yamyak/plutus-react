@@ -1,7 +1,6 @@
 import React from 'react';
 import Header from './HeaderComponent';
 import Portfolio from './PortfolioComponent';
-import { createUser, userLogin, userLogout, createPortfolio, getPortfolio, addStock } from '../connections/BackendConnection';
 
 class Main extends React.Component
 {
@@ -13,79 +12,49 @@ class Main extends React.Component
       currentPortfolio: null
     };
 
-    this.createAccount = this.createAccount.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
-    this.createPort = this.createPort.bind(this);
+    this.createPortfolio = this.createPortfolio.bind(this);
     this.setPortfolio = this.setPortfolio.bind(this);
+    this.addStock = this.addStock.bind(this);
   }
 
-  createAccount(username, password)
+  login(user, portfolio)
   {
-    createUser(username, password);
-  }
-
-  login(username, password)
-  {
-    userLogin(username, password, (res) => {
-      if(res.success)
-      {
-        this.setState({
-          currentUser: res.data,
-          currentPortfolio: res.data2
-        });
-      }
+    this.setState({
+      currentUser: user,
+      currentPortfolio: portfolio
     });
   }
 
   logout()
   {
-    userLogout((res) => {
-      if(res)
-      {
-        this.setState({
-          currentUser: null
-        });
-      }
+    this.setState({
+      currentUser: null,
+      currentPortfolio: null
     });
   }
 
-  createPort(id, name)
+  createPortfolio(user)
   {
-    createPortfolio(id, name, (res) => {
-      if(res.success)
-      {
-        const cur = res.data.portfolios.length - 1;
-        this.setState({
-          currentUser: res.data,
-          currentPortfolio: res.data.portfolios[cur]
-        });
-      }
+    const cur = user.portfolios.length - 1;
+    this.setState({
+      currentUser: user,
+      currentPortfolio: user.portfolios[cur]
     });
   }
 
-  setPortfolio(id)
+  setPortfolio(portfolio)
   {
-    getPortfolio(id, (res) => {
-      if(res.success)
-      {
-        this.setState({
-          currentPortfolio: res.data
-        });
-      }
+    this.setState({
+      currentPortfolio: portfolio
     });
   }
 
-  createStock(id, ticker)
+  addStock(portfolio)
   {
-    addStock(id, ticker, (res) => {
-      if(res.success)
-      {
-        console.log(res);
-        this.setState({
-          currentPortfolio: res.data
-        });
-      }
+    this.setState({
+      currentPortfolio: portfolio
     });
   }
 
@@ -95,16 +64,15 @@ class Main extends React.Component
       <div>
         <Header
           user={this.state.currentUser}
-          create={this.createAccount}
           login={this.login}
           logout={this.logout}
         />
         <Portfolio
           user={this.state.currentUser} 
           portfolio={this.state.currentPortfolio}
-          create={this.createPort}
+          create={this.createPortfolio}
           set={this.setPortfolio}
-          add={this.createStock}
+          add={this.addStock}
         />
       </div>
     );
