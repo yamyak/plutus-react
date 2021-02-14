@@ -114,9 +114,7 @@ class Header extends React.Component
 
   handleLogout()
   {
-    console.log('test1')
     userLogout().then((res) => {
-      console.log('test2')
       if(res.success)
       {
         this.props.logout();

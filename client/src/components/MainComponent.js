@@ -16,7 +16,6 @@ class Main extends React.Component
     this.logout = this.logout.bind(this);
     this.createPortfolio = this.createPortfolio.bind(this);
     this.setPortfolio = this.setPortfolio.bind(this);
-    this.addStock = this.addStock.bind(this);
   }
 
   login(user, portfolio)
@@ -51,13 +50,6 @@ class Main extends React.Component
     });
   }
 
-  addStock(portfolio)
-  {
-    this.setState({
-      currentPortfolio: portfolio
-    });
-  }
-
   render()
   {
     return (
@@ -72,7 +64,6 @@ class Main extends React.Component
           portfolio={this.state.currentPortfolio}
           create={this.createPortfolio}
           set={this.setPortfolio}
-          add={this.addStock}
         />
       </div>
     );

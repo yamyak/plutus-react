@@ -105,7 +105,7 @@ class Portfolio extends React.Component
       .then((res) => {
         if(res.success)
         {
-          this.props.add(res.portfolio);
+          this.props.set(res.portfolio);
           this.toggleAddStockModal();
         }
         else
@@ -153,7 +153,7 @@ class Portfolio extends React.Component
               <Button color="warning" onClick={this.toggleCreatePortModal}>Create New Portfolio</Button>
             </p>
           </Jumbotron>
-          <Data portfolio={this.props.portfolio}/>
+          <Data portfolio={this.props.portfolio} set={this.props.set}/>
           {this.props.portfolio !== null && 
             <div className="padup">
               <Button color="success" onClick={this.toggleAddStockModal}>Add New Stock</Button>

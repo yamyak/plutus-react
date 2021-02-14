@@ -131,4 +131,27 @@ function addStock(idIn, tickerIn)
   });
 }
 
-export { createUser, userLogin, userLogout, createPortfolio, getPortfolio, addStock };
+function deleteStock(stockIdIn, portIdIn)
+{
+  return new Promise((resolve, reject) => {
+    fetch("http://localhost:3000/delete", {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        stockId: stockIdIn,
+        portId: portIdIn
+      })
+    })
+    .then((res) => resolve(res.json()))
+    .catch(() => {
+      reject({
+        success: false
+      });
+    });
+  });
+}
+
+export { createUser, userLogin, userLogout, createPortfolio, getPortfolio, addStock, deleteStock };

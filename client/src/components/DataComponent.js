@@ -1,6 +1,7 @@
 import React from 'react';
 import MaterialTable from 'material-table';
 import { TableIcons } from '../shared/material-icons';
+import { deleteStock } from '../connections/BackendConnection';
 
 class Data extends React.Component
 {
@@ -19,6 +20,26 @@ class Data extends React.Component
         {title: "Score", field: "score", type: "numeric"}
       ]
     };
+
+    this.handleDeleteStock = this.handleDeleteStock.bind(this);
+  }
+
+  handleDeleteStock(stockId)
+  {
+    deleteStock(stockId, this.props.portfolio._id)
+    .then((res) => {
+      if(res.success)
+      {
+        this.props.set(res.portfolio);
+      }
+      else
+      {
+        console.log('Stock deletion failed');  
+      }
+    })
+    .catch(() => {
+      console.log('Stock deletion failed');
+    });
   }
 
   render()
@@ -30,6 +51,16 @@ class Data extends React.Component
           <MaterialTable icons={TableIcons}
           columns={this.state.columns}
           data={this.props.portfolio.stocks}
+          actions={[{
+            icon: TableIcons.Delete,
+            tooltip: 'Delete Stock',
+            onClick: (event, rowData) => { 
+              this.handleDeleteStock(rowData._id);
+            }
+          }]}
+          options={{
+            actionsColumnIndex: -1
+          }}
           title="Stock Table"/>
         </div>
       );

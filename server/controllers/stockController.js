@@ -48,6 +48,36 @@ addStock = (req, res, next) => {
   .catch((err) => next(err));
 };
 
+deleteStock = (req, res, next) => {
+  Stock.deleteOne({ _id: req.body.stockId })
+  .then(() => {
+    Portfolio.findOneAndUpdate(
+      { _id: req.body.portId },
+      { $pull: { stocks: req.body.stockId } },
+      { new: true }
+    ).populate('stocks')
+    .then((port) => {
+      if(port)
+      {
+        return res.status(200).json({
+          success: true,
+          portfolio: port,
+          message: 'Stock successfully deleted'
+        });
+      }
+      else
+      {
+        var err = new Error('Current portfolio does not exist');
+        err.status = 403;
+        next(err);
+      }
+    })
+    .catch((err) => next(err));
+  })
+  .catch((err) => next(err));
+};
+
 module.exports = {
-  addStock
+  addStock,
+  deleteStock
 };
