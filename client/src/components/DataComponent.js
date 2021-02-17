@@ -12,15 +12,11 @@ class Data extends React.Component
       columns: [
         {title: "Name", field: "name"},
         {title: "Ticker", field: "ticker"},
-        {title: "Industry", field: "industry"},
-        {title: "Sector", field: "sector"},
         {title: "Price", field: "price", type: "numeric"},
-        {title: "PE Ratio", field: "peratio", type: "numeric"},
-        {title: "Dividend", field: "dividend", type: "numeric"},
         {title: "Score", field: "score", type: "numeric"}
       ]
     };
-
+    
     this.handleDeleteStock = this.handleDeleteStock.bind(this);
   }
 
@@ -59,6 +55,7 @@ class Data extends React.Component
             }
           }]}
           options={{
+            paging: false,
             actionsColumnIndex: -1
           }}
           title="Stock Table"/>

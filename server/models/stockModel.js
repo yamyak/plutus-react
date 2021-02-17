@@ -12,25 +12,7 @@ const Stock = new Schema(
       type: String,
       required: true
     },
-    industry: {
-      type: String,
-      required: true
-    },
-    sector: {
-      type: String,
-      required: true
-    },
     price: {
-      type: Number,
-      min: 0,
-      required: true
-    },
-    peratio: {
-      type: Number,
-      min: 0,
-      required: true
-    },
-    dividend: {
       type: Number,
       min: 0,
       required: true
@@ -38,6 +20,10 @@ const Stock = new Schema(
     score: {
       type: Number,
       required: true
+    },
+    data: {
+      type: Schema.Types.ObjectId,
+      ref: 'Data'
     }
   },
   {
