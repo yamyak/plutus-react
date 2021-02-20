@@ -1,9 +1,12 @@
 const Portfolio = require('../models/portfolioModel');
 const Stock = require('../models/stockModel');
-const Data = require('../models/dataModel');
 
 addStock = (req, res, next) => {
-  Data.create({
+  Stock.create({
+    name: "name",
+    ticker: req.body.ticker,
+    price: 0, 
+    score: 0,
     industry: "industry",
     sector: "sector",
     peratio: 0,
@@ -25,45 +28,26 @@ addStock = (req, res, next) => {
     assetturnover: 0,
     returnonequity: 0
   })
-  .then((data) => {
-    if(data) 
+  .then((stock) => {
+    if(stock)
     {
-      Stock.create({
-        name: "name",
-        ticker: req.body.ticker,
-        price: 0, 
-        score: 0,
-        data: data._id
-      })
-      .then((stock) => {
-        if(stock)
+      Portfolio.findOneAndUpdate(
+        { _id: req.body.id },
+        { $push: { stocks: stock._id } },
+        { new: true }
+      ).populate('stocks')
+      .then((port) => {
+        if(port)
         {
-          Portfolio.findOneAndUpdate(
-            { _id: req.body.id },
-            { $push: { stocks: stock._id } },
-            { new: true }
-          ).populate('stocks')
-          .then((port) => {
-            if(port)
-            {
-              return res.status(200).json({
-                success: true,
-                portfolio: port,
-                message: 'Stock successfully created'
-              });
-            }
-            else
-            {
-              var err = new Error('Current portfolio does not exist');
-              err.status = 403;
-              next(err);
-            }
-          })
-          .catch((err) => next(err));
+          return res.status(200).json({
+            success: true,
+            portfolio: port,
+            message: 'Stock successfully created'
+          });
         }
         else
         {
-          var err = new Error('Unable to add stock ' + req.body.ticker);
+          var err = new Error('Current portfolio does not exist');
           err.status = 403;
           next(err);
         }
@@ -85,30 +69,26 @@ deleteStock = (req, res, next) => {
   .then((stock) => {
     if(stock)
     {
-      Data.deleteOne({ _id: stock.data })
-      .then(() => {
-        Portfolio.findOneAndUpdate(
-          { _id: req.body.portId },
-          { $pull: { stocks: req.body.stockId } },
-          { new: true }
-        ).populate('stocks')
-        .then((port) => {
-          if(port)
-          {
-            return res.status(200).json({
-              success: true,
-              portfolio: port,
-              message: 'Stock successfully deleted'
-            });
-          }
-          else
-          {
-            var err = new Error('Current portfolio does not exist');
-            err.status = 403;
-            next(err);
-          }
-        })
-        .catch((err) => next(err));
+      Portfolio.findOneAndUpdate(
+        { _id: req.body.portId },
+        { $pull: { stocks: req.body.stockId } },
+        { new: true }
+      ).populate('stocks')
+      .then((port) => {
+        if(port)
+        {
+          return res.status(200).json({
+            success: true,
+            portfolio: port,
+            message: 'Stock successfully deleted'
+          });
+        }
+        else
+        {
+          var err = new Error('Current portfolio does not exist');
+          err.status = 403;
+          next(err);
+        }
       })
       .catch((err) => next(err));
     }
@@ -123,7 +103,7 @@ deleteStock = (req, res, next) => {
 };
 
 getStock = (req, res, next) => {
-  Stock.findOne({ _id: req.body.id }).populate('data')
+  Stock.findOne({ _id: req.body.id })
   .then((full) => {
     if(full)
     {

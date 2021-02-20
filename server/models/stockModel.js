@@ -21,9 +21,87 @@ const Stock = new Schema(
       type: Number,
       required: true
     },
-    data: {
-      type: Schema.Types.ObjectId,
-      ref: 'Data'
+    industry: {
+      type: String,
+      required: true
+    },
+    sector: {
+      type: String,
+      required: true
+    },
+    peratio: {
+      type: Number,
+      min: 0,
+      required: true
+    },
+    dividend: {
+      type: Number,
+      min: 0,
+      required: true
+    },
+    profit: {
+      type: Number,
+      required: true
+    },
+    revenue: {
+      type: Number,
+      required: true
+    },
+    debt: {
+      type: Number,
+      required: true
+    },
+    marketcap: {
+      type: Number,
+      required: true
+    },
+    payoutratio: {
+      type: Number,
+      required: true
+    },
+    pbratio: {
+      type: Number,
+      required: true
+    },
+    currentratio: {
+      type: Number,
+      required: true
+    },
+    quickratio: {
+      type: Number,
+      required: true
+    },
+    grossmargin: {
+      type: Number,
+      required: true
+    },
+    operatingmargin: {
+      type: Number,
+      required: true
+    },
+    debttoequity: {
+      type: Number,
+      required: true
+    },
+    debtratio: {
+      type: Number,
+      required: true
+    },
+    netmargin: {
+      type: Number,
+      required: true
+    },
+    receivablesturnover: {
+      type: Number,
+      required: true
+    },
+    assetturnover: {
+      type: Number,
+      required: true
+    },
+    returnonequity: {
+      type: Number,
+      required: true
     }
   },
   {
