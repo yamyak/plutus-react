@@ -1,36 +1,93 @@
+const { spawn } = require('child_process');
+
 const Portfolio = require('../models/portfolioModel');
 const Stock = require('../models/stockModel');
 
+// add stock function
 addStock = (req, res, next) => {
-  Stock.create({
-    name: "name",
-    ticker: req.body.ticker,
-    price: 0, 
-    score: 0,
-    industry: "industry",
-    sector: "sector",
-    peratio: 0,
-    dividend: 0,
-    profit: 0,
-    revenue: 0,
-    debt: 0,
-    marketcap: 0,
-    payoutratio: 0,
-    pbratio: 0,
-    currentratio: 0,
-    quickratio: 0,
-    grossmargin: 0,
-    operatingmargin: 0,
-    debttoequity: 0,
-    debtratio: 0,
-    netmargin: 0,
-    receivablesturnover: 0,
-    assetturnover: 0,
-    returnonequity: 0
-  })
+  // query db to check if stock already exists
+  Stock.findOne({ ticker: req.body.ticker })
   .then((stock) => {
-    if(stock)
+    if(!stock)
     {
+      // if stock does not exist, create it
+      // get the path to the python script
+      //const pythonPath = 'E:\\Projects\\PycharmProjects\\Plutus_03\\Scripts\\StockAdd.py';
+      const pythonPath = 'E:/Projects/PycharmProjects/Plutus_03/Scripts/TestScript.py';
+      console.log(pythonPath)
+      // start the python process to create and populate the stock data
+      const pythonProcess = spawn('python', [pythonPath, '..\\config.ini', req.body.ticker]);
+      pythonProcess.stdout.on('data', (data) => {
+        if(data == 'Invalid ticker')
+        {
+          console.log('Bad ticker')
+          // if python process cannot find stock, return error stating ticker is invalid
+          var err = new Error('Not a valid stock ticker');
+          err.status = 403;
+          next(err);
+        }
+        else if(data == 'Stock Added')
+        {
+          console.log('Good ticker')
+          // if stock added successfuly, query db for newly added stock
+          Stock.findOne({ ticker: req.body.ticker })
+          .then((stock) => {
+            if(stock)
+            {
+              // if stock retrieved, add stock to current portfolio
+              Portfolio.findOneAndUpdate(
+                { _id: req.body.id },
+                { $push: { stocks: stock._id } },
+                { new: true }
+              ).populate('stocks')
+              .then((port) => {
+                if(port)
+                {
+                  // if successful, return updated portfolio
+                  return res.status(200).json({
+                    success: true,
+                    portfolio: port,
+                    message: 'Stock successfully created'
+                  });
+                }
+                else
+                {
+                  // if portfolio does not exist, return an error stating so
+                  var err = new Error('Current portfolio does not exist');
+                  err.status = 403;
+                  next(err);
+                }
+              })
+              .catch((err) => next(err));
+            }
+            else
+            {
+              // if not successful, return an error stating so
+              var err = new Error('Stock creation failed');
+              err.status = 403;
+              next(err);
+            }
+          })
+          .catch((err) => next(err));
+        }
+        else
+        {
+          // python process returned something unknown
+          // most likely a failure
+          var err = new Error('Unknown error');
+          err.status = 403;
+          next(err);
+        }
+      });
+
+      pythonProcess.stderr.on('data', (data) => {
+        console.log(`error:${data}`);
+      });
+    }
+    else
+    {
+      // if stock exists, query database to add to current portfolio
+      // get updated portfolio
       Portfolio.findOneAndUpdate(
         { _id: req.body.id },
         { $push: { stocks: stock._id } },
@@ -39,6 +96,7 @@ addStock = (req, res, next) => {
       .then((port) => {
         if(port)
         {
+          // if successful, return with updated portfolio
           return res.status(200).json({
             success: true,
             portfolio: port,
@@ -47,6 +105,7 @@ addStock = (req, res, next) => {
         }
         else
         {
+          // if portfolio does not exist, return an error stating so
           var err = new Error('Current portfolio does not exist');
           err.status = 403;
           next(err);
@@ -54,71 +113,33 @@ addStock = (req, res, next) => {
       })
       .catch((err) => next(err));
     }
-    else
-    {
-      var err = new Error('Unable to add stock ' + req.body.ticker);
-      err.status = 403;
-      next(err);
-    }
   })
   .catch((err) => next(err));
 };
 
+// delete stock function
 deleteStock = (req, res, next) => {
-  Stock.findOneAndDelete({ _id: req.body.stockId })
-  .then((stock) => {
-    if(stock)
+  // query db to pull/remove provide stockId from portfolio
+  // get updated portfolio with stocks populated
+  Portfolio.findOneAndUpdate(
+    { _id: req.body.portId },
+    { $pull: { stocks: req.body.stockId } },
+    { new: true }
+  ).populate('stocks')
+  .then((port) => {
+    if(port)
     {
-      Portfolio.findOneAndUpdate(
-        { _id: req.body.portId },
-        { $pull: { stocks: req.body.stockId } },
-        { new: true }
-      ).populate('stocks')
-      .then((port) => {
-        if(port)
-        {
-          return res.status(200).json({
-            success: true,
-            portfolio: port,
-            message: 'Stock successfully deleted'
-          });
-        }
-        else
-        {
-          var err = new Error('Current portfolio does not exist');
-          err.status = 403;
-          next(err);
-        }
-      })
-      .catch((err) => next(err));
-    }
-    else
-    {
-      var err = new Error('Unable to delete stock ' + req.body.stockId);
-      err.status = 403;
-      next(err);
-    }
-  })
-  .catch((err) => next(err));
-};
-
-getStock = (req, res, next) => {
-  Stock.findOne({ _id: req.body.id })
-  .then((full) => {
-    if(full)
-    {
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'text/plain');
-      res.json({
+      // if successful, return update portfolio
+      return res.status(200).json({
         success: true,
-        stock: full,
-        message: 'Stock retrieved'
+        portfolio: port,
+        message: 'Stock successfully deleted'
       });
-      res.end('Stock retrieved!');
     }
     else
     {
-      var err = new Error('Stock with id ' + req.body.id + ' does not exist!');
+      // if portfolio does not exist, return an error stating so
+      var err = new Error('Current portfolio does not exist');
       err.status = 403;
       next(err);
     }
@@ -128,6 +149,5 @@ getStock = (req, res, next) => {
 
 module.exports = {
   addStock,
-  deleteStock,
-  getStock
+  deleteStock
 };

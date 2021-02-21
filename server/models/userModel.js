@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
+// user object contains:
+//        username
+//        password
+//        vector of portfolios (by id)
 const User = new Schema(
   {
     username: {

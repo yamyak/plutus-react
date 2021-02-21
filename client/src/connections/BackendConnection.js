@@ -1,7 +1,10 @@
+// backend api call to create a new user account
 function createUser(usernameIn, passwordIn)
 {
   console.log("Sending account creation request");
   return new Promise((resolve, reject) => {
+    // POST request to create new account
+    // username and password are passed in
     fetch("http://localhost:3000/signup", {
       method: 'POST',
       headers: {
@@ -12,6 +15,8 @@ function createUser(usernameIn, passwordIn)
         password: passwordIn
       })
     })
+    // resolve the result 
+    // success flag set in backend
     .then((res) => resolve(res.json()))
     .catch(() => {
       reject({
@@ -21,9 +26,12 @@ function createUser(usernameIn, passwordIn)
   });
 }
 
+// backend api call to log in to user account
 function userLogin(usernameIn, passwordIn)
 {
   return new Promise((resolve, reject) => {
+    // POST request to log in to account
+    // username and password are passed in
     fetch("http://localhost:3000/signin", {
       method: 'POST',
       headers: {
@@ -35,6 +43,8 @@ function userLogin(usernameIn, passwordIn)
       }),
       credentials : "include"
     })
+    // resolve the result 
+    // success flag set in backend
     .then((res) => resolve(res.json()))
     .catch(() => {
       reject({
@@ -44,8 +54,10 @@ function userLogin(usernameIn, passwordIn)
   }); 
 }
 
+// backend api call to log out of user account
 function userLogout()
 {
+  // GET request to log out of account
   return new Promise((resolve, reject) => {
     fetch("http://localhost:3000/signout", {
       method: 'GET',
@@ -54,6 +66,8 @@ function userLogout()
       },
       credentials : "include"
     })
+    // resolve the result 
+    // success flag set in backend
     .then((res) => resolve(res.json()))
     .catch(() => {
       reject({
@@ -63,9 +77,12 @@ function userLogout()
   });
 }
 
+// backend api call to create a new portfolio
 function createPortfolio(idIn, nameIn)
 {
   return new Promise((resolve, reject) => {
+    // POST request to create new portfolio
+    // user id and portfolio name are passed in
     fetch("http://localhost:3000/create", {
       method: 'POST',
       headers: {
@@ -77,6 +94,8 @@ function createPortfolio(idIn, nameIn)
         name: nameIn
       })
     })
+    // resolve the result 
+    // success flag set in backend
     .then((res) => resolve(res.json()))
     .catch(() => {
       reject({
@@ -86,9 +105,12 @@ function createPortfolio(idIn, nameIn)
   }); 
 }
 
+// backend api call to get portfolio
 function getPortfolio(idIn)
 {
   return new Promise((resolve, reject) => {
+    // POST request to get portfolio
+    // portfolio id is passed in
     fetch("http://localhost:3000/get", {
       method: 'POST',
       headers: {
@@ -99,6 +121,8 @@ function getPortfolio(idIn)
       }),
       credentials : "include"
     })
+    // resolve the result 
+    // success flag set in backend
     .then((res) => resolve(res.json()))
     .catch(() => {
       reject({
@@ -108,9 +132,12 @@ function getPortfolio(idIn)
   });
 }
 
+// backend api call to add stock
 function addStock(idIn, tickerIn)
 {
   return new Promise((resolve, reject) => {
+    // POST request to add stock
+    // portfolio id and ticker name are passed in
     fetch("http://localhost:3000/add", {
       method: 'POST',
       headers: {
@@ -122,6 +149,8 @@ function addStock(idIn, tickerIn)
         ticker: tickerIn
       })
     })
+    // resolve the result 
+    // success flag set in backend
     .then((res) => resolve(res.json()))
     .catch(() => {
       reject({
@@ -131,9 +160,12 @@ function addStock(idIn, tickerIn)
   });
 }
 
+// backend api call to delete stock
 function deleteStock(stockIdIn, portIdIn)
 {
   return new Promise((resolve, reject) => {
+    // POST request to add stock
+    // portfolio id and stock id are passed in
     fetch("http://localhost:3000/delete", {
       method: 'POST',
       headers: {
@@ -145,6 +177,8 @@ function deleteStock(stockIdIn, portIdIn)
         portId: portIdIn
       })
     })
+    // resolve the result 
+    // success flag set in backend
     .then((res) => resolve(res.json()))
     .catch(() => {
       reject({

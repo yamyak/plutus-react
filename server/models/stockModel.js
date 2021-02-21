@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
+// stock object contains stock data elements
 const Stock = new Schema(
   {
     name: {

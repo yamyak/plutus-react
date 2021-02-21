@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
+// portfolio object contains:
+//        name
+//        vector of stocks (by id)
 const Portfolio = new Schema(
   {
     name: {

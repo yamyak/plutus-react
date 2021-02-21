@@ -2,10 +2,13 @@ import React from 'react';
 import { Navbar, NavbarText, NavbarBrand, Nav, NavItem, Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Label, Input } from 'reactstrap';
 import { createUser, userLogin, userLogout } from '../connections/BackendConnection';
 
+// function to render the correct buttons in navbar
 function RenderLogin({user, toggleCreate, toggleLogin, logout}) 
-{    
+{
   if(user)
   {
+    // if user object is not null, logged in
+    // display welcome banner and logout button
     return(
       <div className="container">
         <NavItem>
@@ -20,6 +23,8 @@ function RenderLogin({user, toggleCreate, toggleLogin, logout})
   }
   else
   {
+    // if user object is null, not logged in
+    // display create new account and log buttons
     return (
       <div className="container">
         <NavItem>
@@ -34,6 +39,7 @@ function RenderLogin({user, toggleCreate, toggleLogin, logout})
   }
 }
 
+// navbar header class
 class Header extends React.Component 
 {
   constructor(props) {
@@ -51,6 +57,7 @@ class Header extends React.Component
     this.handleLogout = this.handleLogout.bind(this);
   }
 
+  // toggles the create new account dialog
   toggleCreateModal()
   {
     this.setState({
@@ -58,6 +65,7 @@ class Header extends React.Component
     });
   }
 
+  // toggles the log in dialog
   toggleLoginModal() 
   {
     this.setState({
@@ -65,66 +73,112 @@ class Header extends React.Component
     });
   }
 
+  // called when create account dialog is submitted
+  // calls backend to create and save new user account
   handleCreate(event)
   {
-    if(this.password1.value === this.password2.value)
+    // verify that needed values have been provided
+    if(this.username.value !== "" && 
+    this.password1.value !== "" &&
+    this.password2.value !== "")
     {
-      createUser(this.username.value, this.password1.value)
+      // verify that passwords provided match
+      if(this.password1.value === this.password2.value)
+      {
+        // call backend api to create new user account
+        createUser(this.username.value, this.password1.value)
+        .then((res) => {
+          if(res.success)
+          {
+            // if successful, notify user and close the dialog
+            // does not set the current user and portfolio
+            // user must log in after creating an account
+            console.log('Account creation successful');
+            // close the dialog
+            this.toggleCreateModal();
+          }
+          else
+          {
+            // if unsuccessful, notify user why in dialog
+            console.log('Account creation failed');  
+          }
+        })
+        .catch(() => {
+          // if unsuccessful, notify user why in dialog
+          console.log('Account creation failed');
+        });
+      }
+      else
+      {
+        // if unsuccessful, notify user why in dialog
+        console.log('Passwords do not match');
+      }
+    }
+    else
+    {
+      // if unsuccessful, notify user why in dialog
+      console.log("Username or password not provided")
+    }
+    event.preventDefault();
+  }
+
+  // called when login account dialog is submitted
+  // calls backend to verify login credentials and return account objects
+  // pass objects up to set current user and portfolio
+  handleLogin(event)
+  {
+    // verify that needed values have been provided
+    if(this.username.value !== "" && this.password.value !== "")
+    {
+      // call api backend to log in to account
+      userLogin(this.username.value, this.password.value)
       .then((res) => {
         if(res.success)
         {
-          console.log('Account creation successful');
-          this.toggleCreateModal();
+          // if successful, pass account objects to parent component
+          this.props.login(res.profile, res.portfolio);
+          // close the dialog
+          this.toggleLoginModal();
         }
         else
         {
-          console.log('Account creation failed');  
+          // if unsuccessful, notify user why in dialog
+          console.log('Account login failed');  
         }
       })
       .catch(() => {
-        console.log('Account creation failed');
+        // if unsuccessful, notify user why in dialog
+        console.log('Account login failed');
       });
     }
     else
     {
-      console.log('Passwords do not match');
+      // if unsuccessful, notify user why in dialog
+      console.log("Username or password not provided")
     }
     event.preventDefault();
   }
 
-  handleLogin(event)
-  {
-    userLogin(this.username.value, this.password.value)
-    .then((res) => {
-      if(res.success)
-      {
-        this.props.login(res.profile, res.portfolio);
-        this.toggleLoginModal();
-      }
-      else
-      {
-        console.log('Account login failed');  
-      }
-    })
-    .catch(() => {
-      console.log('Account login failed');
-    });
-    event.preventDefault();
-  }
-
+  // called when logout button selected
+  // calls backend to clear out authentication sessions
+  // clear out current user and portfolio values
   handleLogout()
   {
+    // call api backend to log out off account
     userLogout().then((res) => {
       if(res.success)
       {
+        // if successful, call callback function to clear out user and portfolio values
         this.props.logout();
       }
       else
       {
+        // if unsuccessful, notify user why
         console.log('Account logout failed');  
       }
     })
     .catch(() => {
+      // if unsuccessful, notify user why
       console.log('Account logout failed');
     });
   }
@@ -133,9 +187,13 @@ class Header extends React.Component
   {
     return (
       <div>
+        {/* navbar component */}
         <Navbar dark expand="md">
           <NavbarBrand>Plutus-React</NavbarBrand>
           <Nav className="ml-auto" navbar>
+            {/* dynamic rendering of login/logout/create account buttons,
+                takes user to display username when logged in,
+                takes callback functions for all buttons in navbar */}
             <RenderLogin 
               user={this.props.user} 
               toggleCreate={this.toggleCreateModal} 
@@ -144,6 +202,7 @@ class Header extends React.Component
             />
           </Nav>
         </Navbar>
+        {/* create new account dialog */}
         <Modal isOpen={this.state.isCreateModalOpen} toggle={this.toggleCreateModal}>
           <ModalHeader toggle={this.toggleCreateModal}>Create Your Account</ModalHeader>
           <ModalBody>
@@ -164,6 +223,7 @@ class Header extends React.Component
             </Form>
           </ModalBody>
         </Modal>
+        {/* login dialog */}
         <Modal isOpen={this.state.isLoginModalOpen} toggle={this.toggleLoginModal}>
           <ModalHeader toggle={this.toggleLoginModal}>Login</ModalHeader>
           <ModalBody>
