@@ -12,23 +12,20 @@ addStock = (req, res, next) => {
     {
       // if stock does not exist, create it
       // get the path to the python script
-      //const pythonPath = 'E:\\Projects\\PycharmProjects\\Plutus_03\\Scripts\\StockAdd.py';
-      const pythonPath = 'E:/Projects/PycharmProjects/Plutus_03/Scripts/TestScript.py';
-      console.log(pythonPath)
+      var pythonPath = process.env.PLUTUS.toString() + '/StockAdd.py';
       // start the python process to create and populate the stock data
-      const pythonProcess = spawn('python', [pythonPath, '..\\config.ini', req.body.ticker]);
+      const pythonProcess = spawn('python', [pythonPath, './config.ini', req.body.ticker]);
       pythonProcess.stdout.on('data', (data) => {
-        if(data == 'Invalid ticker')
+        data = data.toString('utf8').replace(/^\s+|\s+$/g, '');
+        if(data === 'Invalid ticker')
         {
-          console.log('Bad ticker')
           // if python process cannot find stock, return error stating ticker is invalid
           var err = new Error('Not a valid stock ticker');
           err.status = 403;
           next(err);
         }
-        else if(data == 'Stock Added')
+        else if(data === 'Stock Added')
         {
-          console.log('Good ticker')
           // if stock added successfuly, query db for newly added stock
           Stock.findOne({ ticker: req.body.ticker })
           .then((stock) => {
