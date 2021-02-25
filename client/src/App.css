@@ -55,3 +55,8 @@ address {
   padding-top: 15px;
   text-align: center;
 }
+
+Form.detailed {
+  padding-top: 15px;
+  margin-left: 100px;
+}

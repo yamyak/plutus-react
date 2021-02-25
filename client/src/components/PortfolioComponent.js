@@ -224,6 +224,7 @@ class Portfolio extends React.Component
           {/* portfolio data table component */}
           <Data portfolio={this.props.portfolio} set={this.props.set}/>
           {/* only display add new stock button if there is a current portfolio set in parent component */}
+          {/* padup class is for css, adds margin above button, between table and button */}
           {this.props.portfolio !== null && 
             <div className="padup">
               <Button color="success" onClick={this.toggleAddStockModal}>Add New Stock</Button>

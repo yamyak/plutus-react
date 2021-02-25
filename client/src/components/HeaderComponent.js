@@ -9,6 +9,7 @@ function RenderLogin({user, toggleCreate, toggleLogin, logout})
   {
     // if user object is not null, logged in
     // display welcome banner and logout button
+    // divider class is for css, adds buffer between elements
     return(
       <div className="container">
         <NavItem>
