@@ -12,8 +12,8 @@ function RenderDetailedData({stockData, dataMap})
   for(var key in stockData)
   {
     // do not include useless info like id or fields already displayed in main row like ticker
-    if(key !== "_id" && key !== "tableData" && key !== "name" &&
-        key !== "ticker" && key !== "price" && key !== "score")
+    if(key !== '_id' && key !== 'tableData' && key !== 'name' &&
+        key !== 'ticker' && key !== 'price' && key !== 'score')
     {
       keys.push(key);
     }
@@ -26,7 +26,7 @@ function RenderDetailedData({stockData, dataMap})
       <FormGroup row>
         <Label  for={key} sm={2}>{dataMap[key]}</Label>
         <Col sm={3}>
-          <Input type="text" name={key} id={key} placeholder={stockData[key]} disabled/>
+          <Input type='text' name={key} id={key} placeholder={stockData[key]} disabled/>
         </Col>
       </FormGroup>
     );
@@ -35,7 +35,7 @@ function RenderDetailedData({stockData, dataMap})
   // return form displayed in detail panel
   // detailed class is for css, puts margin at top and left
   return (
-    <Form className="detailed">
+    <Form className='detailed'>
       {rows}
     </Form>
   );
@@ -52,32 +52,32 @@ class Data extends React.Component
     // maps rowData object field names to displays titles in detail panel
     this.state = {
       columns: [
-        {title: "Name", field: "name"},
-        {title: "Ticker", field: "ticker"},
-        {title: "Price", field: "price", type: "numeric"},
-        {title: "Score", field: "score", type: "numeric"}
+        {title: 'Name', field: 'name'},
+        {title: 'Ticker', field: 'ticker'},
+        {title: 'Price', field: 'price', type: 'numeric'},
+        {title: 'Score', field: 'score', type: 'numeric'}
       ],
       detailMap: {
-        "industry": "Company Industry",
-        "sector": "Company Sector",
-        "peratio": "PE Ratio",
-        "dividend": "Dividend",
-        "profit": "Profit",
-        "revenue": "Revenue",
-        "debt": "Debt",
-        "marketcap": "Market Cap",
-        "payoutratio": "Payout Ratio",
-        "pbratio": "PB Ratio",
-        "currentratio": "Current Ratio",
-        "quickratio": "Quick Ratio",
-        "grossmargin": "Gross Margin",
-        "operatingmargin": "Operating Margin",
-        "debttoequity": "Debt to Equity",
-        "debtratio": "Debt Ratio",
-        "netmargin": "Net Margin",
-        "receivablesturnover": "Receivables Turnover",
-        "assetturnover": "Asset Turnover",
-        "returnonequity": "Return on Equity"
+        'industry': 'Company Industry',
+        'sector': 'Company Sector',
+        'peratio': 'PE Ratio',
+        'dividend': 'Dividend',
+        'profit': 'Profit',
+        'revenue': 'Revenue',
+        'debt': 'Debt',
+        'marketcap': 'Market Cap',
+        'payoutratio': 'Payout Ratio',
+        'pbratio': 'PB Ratio',
+        'currentratio': 'Current Ratio',
+        'quickratio': 'Quick Ratio',
+        'grossmargin': 'Gross Margin',
+        'operatingmargin': 'Operating Margin',
+        'debttoequity': 'Debt to Equity',
+        'debtratio': 'Debt Ratio',
+        'netmargin': 'Net Margin',
+        'receivablesturnover': 'Receivables Turnover',
+        'assetturnover': 'Asset Turnover',
+        'returnonequity': 'Return on Equity'
       }
     };
     
@@ -120,7 +120,7 @@ class Data extends React.Component
       // actionsColumnIndex: -1: actions column (buttons) appears on right
       // detailPanel: describes when is rendered when detail panel is revealed
       return (
-        <div style={{ maxWidth: "100%" }}>
+        <div style={{ maxWidth: '100%' }}>
           <MaterialTable 
             icons={TableIcons}
             columns={this.state.columns}
@@ -136,7 +136,7 @@ class Data extends React.Component
               paging: false,
               actionsColumnIndex: -1
             }}
-            title="Stock Table"
+            title='Stock Table'
             detailPanel={rowData => {
               return (
                 <RenderDetailedData stockData={rowData} dataMap={this.state.detailMap}/>

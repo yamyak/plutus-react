@@ -1,14 +1,14 @@
 // backend api call to create a new user account
 function createUser(usernameIn, passwordIn)
 {
-  console.log("Sending account creation request");
+  console.log('Sending account creation request');
   return new Promise((resolve, reject) => {
     // POST request to create new account
     // username and password are passed in
-    fetch("http://localhost:3000/signup", {
+    fetch('http://localhost:3000/signup', {
       method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         username: usernameIn,
@@ -32,16 +32,16 @@ function userLogin(usernameIn, passwordIn)
   return new Promise((resolve, reject) => {
     // POST request to log in to account
     // username and password are passed in
-    fetch("http://localhost:3000/signin", {
+    fetch('http://localhost:3000/signin', {
       method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         username: usernameIn,
         password: passwordIn
       }),
-      credentials : "include"
+      credentials : 'include'
     })
     // resolve the result 
     // success flag set in backend
@@ -59,12 +59,12 @@ function userLogout()
 {
   // GET request to log out of account
   return new Promise((resolve, reject) => {
-    fetch("http://localhost:3000/signout", {
+    fetch('http://localhost:3000/signout', {
       method: 'GET',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
-      credentials : "include"
+      credentials : 'include'
     })
     // resolve the result 
     // success flag set in backend
@@ -83,12 +83,12 @@ function createPortfolio(idIn, nameIn)
   return new Promise((resolve, reject) => {
     // POST request to create new portfolio
     // user id and portfolio name are passed in
-    fetch("http://localhost:3000/create", {
+    fetch('http://localhost:3000/create', {
       method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
-      credentials: "include",
+      credentials: 'include',
       body: JSON.stringify({
         id: idIn,
         name: nameIn
@@ -111,15 +111,15 @@ function getPortfolio(idIn)
   return new Promise((resolve, reject) => {
     // POST request to get portfolio
     // portfolio id is passed in
-    fetch("http://localhost:3000/get", {
+    fetch('http://localhost:3000/get', {
       method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         id: idIn
       }),
-      credentials : "include"
+      credentials : 'include'
     })
     // resolve the result 
     // success flag set in backend
@@ -138,12 +138,12 @@ function addStock(idIn, tickerIn)
   return new Promise((resolve, reject) => {
     // POST request to add stock
     // portfolio id and ticker name are passed in
-    fetch("http://localhost:3000/add", {
+    fetch('http://localhost:3000/add', {
       method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
-      credentials: "include",
+      credentials: 'include',
       body: JSON.stringify({
         id: idIn,
         ticker: tickerIn
@@ -166,12 +166,12 @@ function deleteStock(stockIdIn, portIdIn)
   return new Promise((resolve, reject) => {
     // POST request to add stock
     // portfolio id and stock id are passed in
-    fetch("http://localhost:3000/delete", {
+    fetch('http://localhost:3000/delete', {
       method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
-      credentials: "include",
+      credentials: 'include',
       body: JSON.stringify({
         stockId: stockIdIn,
         portId: portIdIn

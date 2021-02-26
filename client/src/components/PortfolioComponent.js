@@ -23,10 +23,10 @@ function RenderSelection({current, portfolios, select})
     // TODO: need to add ids to dropdown elements
     // create current portfolio label and dropdown element
     return (
-      <div className="container" style={{ maxWidth: "100%" }}>
-        <div className="row">
-          <p className="lead">Current Portfolio: {current.name}</p>
-          <Dropdown className="ml-auto" isOpen={dropdownOpen} toggle={toggle}>
+      <div className='container' style={{ maxWidth: '100%' }}>
+        <div className='row'>
+          <p className='lead'>Current Portfolio: {current.name}</p>
+          <Dropdown className='ml-auto' isOpen={dropdownOpen} toggle={toggle}>
             <DropdownToggle caret>Pick a Portfolio</DropdownToggle>
             <DropdownMenu>
               {ports}
@@ -40,7 +40,7 @@ function RenderSelection({current, portfolios, select})
   {
     // if no portfolios, do not display dropdown
     return (
-      <p className="lead">You have no portfolios to view. Add one now!</p>
+      <p className='lead'>You have no portfolios to view. Add one now!</p>
     );
   }
 }
@@ -53,7 +53,8 @@ class Portfolio extends React.Component
 
     this.state = {
       isCreatePortModalOpen: false,
-      isAddStockModalOpen: false
+      isAddStockModalOpen: false,
+      errorMessage: ''
     };
 
     this.toggleCreatePortModal = this.toggleCreatePortModal.bind(this);
@@ -67,7 +68,8 @@ class Portfolio extends React.Component
   toggleCreatePortModal()
   {
     this.setState({
-      isCreatePortModalOpen: !this.state.isCreatePortModalOpen
+      isCreatePortModalOpen: !this.state.isCreatePortModalOpen,
+      errorMessage: ''
     });
   }
 
@@ -75,8 +77,11 @@ class Portfolio extends React.Component
   // calls backend to create and save new portfolio
   handleCreatePort(event)
   {
+    this.setState({
+      errorMessage: ''
+    });
     // verify that needed values have been provided
-    if(this.name.value && this.name.value !== "")
+    if(this.name.value && this.name.value !== '')
     {
       // check if user account has portfolio with same name
       var found = this.props.user.portfolios.find((port) => {
@@ -100,24 +105,33 @@ class Portfolio extends React.Component
           else
           {
             // if unsuccessful, notify user why in dialog
-            console.log('Portfolio creation failed');  
+            this.setState({
+              errorMessage: res.error
+            });
           }
         })
         .catch(() => {
           // if unsuccessful, notify user why in dialog
-          console.log('Portfolio creation failed');
+          this.setState({
+            errorMessage: 'Portfolio creation failed'
+          });
         });
       }
       else
       {
         // if unsuccessful, notify user why in dialog
-        console.log('Duplicate portfolio name');  
+        const msg = 'Portfolio ' + this.name.value + ' already exists';
+        this.setState({
+          errorMessage: msg
+        });
       }
     }
     else
     {
       // if unsuccessful, notify user why in dialog
-      console.log('No portfolio name provided');
+      this.setState({
+        errorMessage: 'Please provide a portfolio name'
+      });
     }
     event.preventDefault();
   }
@@ -126,7 +140,8 @@ class Portfolio extends React.Component
   toggleAddStockModal()
   {
     this.setState({
-      isAddStockModalOpen: !this.state.isAddStockModalOpen
+      isAddStockModalOpen: !this.state.isAddStockModalOpen,
+      errorMessage: ''
     });
   }
 
@@ -134,8 +149,11 @@ class Portfolio extends React.Component
   // calls backend to create and save new stock
   handleAddStock(event)
   {
+    this.setState({
+      errorMessage: ''
+    });
     // verify that needed values have been provided
-    if(this.ticker.value && this.ticker.value !== "")
+    if(this.ticker.value && this.ticker.value !== '')
     {
       // check if current portfolio has stock with same ticker
       var found = this.props.portfolio.stocks.find((stock) => {
@@ -159,24 +177,33 @@ class Portfolio extends React.Component
           else
           {
             // if unsuccessful, notify user why in dialog
-            console.log('Stock addition failed');  
+            this.setState({
+              errorMessage: res.error
+            });
           }
         })
         .catch(() => {
           // if unsuccessful, notify user why in dialog
-          console.log('Stock addition failed');
+          this.setState({
+            errorMessage: 'Stock addition failed'
+          });
         });
       }
       else
       {
         // if unsuccessful, notify user why in dialog
-        console.log('Stock already in portfolio');
+        const msg = this.ticker.value + ' is already in your portfolio';
+        this.setState({
+          errorMessage: msg
+        });
       }
     }
     else
     {
       // if unsuccessful, notify user why in dialog
-      console.log('No stock ticker value provided');
+      this.setState({
+        errorMessage: 'Please provide a ticker value'
+      });
     }
     event.preventDefault();
   }
@@ -195,12 +222,12 @@ class Portfolio extends React.Component
       }
       else
       {
-        // if unsuccessful, notify user why in dialog
+        // if unsuccessful, notify user why
         console.log('Portfolio retrieval failed');  
       }
     })
     .catch(() => {
-      // if unsuccessful, notify user why in dialog
+      // if unsuccessful, notify user why
       console.log('Portfolio retrieval failed');
     });
   }
@@ -217,8 +244,8 @@ class Portfolio extends React.Component
           <Jumbotron>
             {/* render dropdown selection component with portfolio name */}
             <RenderSelection current={this.props.portfolio} portfolios={this.props.user.portfolios} select={this.dropdownSelect}/>
-            <p className="lead">
-              <Button color="warning" onClick={this.toggleCreatePortModal}>Create New Portfolio</Button>
+            <p className='lead'>
+              <Button color='warning' onClick={this.toggleCreatePortModal}>Create New Portfolio</Button>
             </p>
           </Jumbotron>
           {/* portfolio data table component */}
@@ -226,8 +253,8 @@ class Portfolio extends React.Component
           {/* only display add new stock button if there is a current portfolio set in parent component */}
           {/* padup class is for css, adds margin above button, between table and button */}
           {this.props.portfolio !== null && 
-            <div className="padup">
-              <Button color="success" onClick={this.toggleAddStockModal}>Add New Stock</Button>
+            <div className='padup'>
+              <Button color='success' onClick={this.toggleAddStockModal}>Add New Stock</Button>
             </div>
           }
           {/* create new portfolio dialog */}
@@ -236,10 +263,13 @@ class Portfolio extends React.Component
             <ModalBody>
               <Form onSubmit={this.handleCreatePort}>
                 <FormGroup>
-                  <Label htmlFor="name">Name</Label>
-                  <Input type="text" id="name" name="name" innerRef={(input) => this.name = input}/>
+                  <Label htmlFor='name'>Name</Label>
+                  <Input type='text' id='name' name='name' innerRef={(input) => this.name = input}/>
                 </FormGroup>
-                <Button type="submit" value="submit" color="primary">Submit</Button>
+                <FormGroup>
+                  <Label md={{ offset: 3 }} className='errorcolor' htmlFor='porterrormsg'>{this.state.errorMessage}</Label>
+                </FormGroup>
+                <Button type='submit' value='submit' color='primary'>Submit</Button>
               </Form>
             </ModalBody>
           </Modal>
@@ -249,10 +279,13 @@ class Portfolio extends React.Component
             <ModalBody>
               <Form onSubmit={this.handleAddStock}>
                 <FormGroup>
-                  <Label htmlFor="ticker">Ticker</Label>
-                  <Input type="text" id="ticker" name="ticker" innerRef={(input) => this.ticker = input}/>
+                  <Label htmlFor='ticker'>Ticker</Label>
+                  <Input type='text' id='ticker' name='ticker' innerRef={(input) => this.ticker = input}/>
                 </FormGroup>
-                <Button type="submit" value="submit" color="primary">Submit</Button>
+                <FormGroup>
+                  <Label md={{ offset: 3 }} className='errorcolor' htmlFor='stockerrormsg'>{this.state.errorMessage}</Label>
+                </FormGroup>
+                <Button type='submit' value='submit' color='primary'>Submit</Button>
               </Form>
             </ModalBody>
           </Modal>

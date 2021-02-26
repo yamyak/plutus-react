@@ -20,7 +20,7 @@ addStock = (req, res, next) => {
         if(data === 'Invalid ticker')
         {
           // if python process cannot find stock, return error stating ticker is invalid
-          var err = new Error('Not a valid stock ticker');
+          var err = new Error(req.body.ticker + ' is not a valid stock');
           err.status = 403;
           next(err);
         }
@@ -50,6 +50,7 @@ addStock = (req, res, next) => {
                 else
                 {
                   // if portfolio does not exist, return an error stating so
+                  // should never reach this error
                   var err = new Error('Current portfolio does not exist');
                   err.status = 403;
                   next(err);
@@ -71,7 +72,7 @@ addStock = (req, res, next) => {
         {
           // python process returned something unknown
           // most likely a failure
-          var err = new Error('Unknown error');
+          var err = new Error('Unknown python process error');
           err.status = 403;
           next(err);
         }
@@ -103,6 +104,7 @@ addStock = (req, res, next) => {
         else
         {
           // if portfolio does not exist, return an error stating so
+          // should never reach this error
           var err = new Error('Current portfolio does not exist');
           err.status = 403;
           next(err);
@@ -136,6 +138,7 @@ deleteStock = (req, res, next) => {
     else
     {
       // if portfolio does not exist, return an error stating so
+      // should never reach this error
       var err = new Error('Current portfolio does not exist');
       err.status = 403;
       next(err);

@@ -11,13 +11,13 @@ function RenderLogin({user, toggleCreate, toggleLogin, logout})
     // display welcome banner and logout button
     // divider class is for css, adds buffer between elements
     return(
-      <div className="container">
+      <div className='container'>
         <NavItem>
           <NavbarText>Welcome, {user.username}!</NavbarText>
         </NavItem>
-        <div className="divider"/>
+        <div className='divider'/>
         <NavItem>
-          <Button color="danger" onClick={logout}>Logout</Button>
+          <Button color='danger' onClick={logout}>Logout</Button>
         </NavItem>
       </div>
     )
@@ -27,13 +27,13 @@ function RenderLogin({user, toggleCreate, toggleLogin, logout})
     // if user object is null, not logged in
     // display create new account and log buttons
     return (
-      <div className="container">
+      <div className='container'>
         <NavItem>
-          <Button color="success" onClick={toggleLogin}>Login</Button>
+          <Button color='success' onClick={toggleLogin}>Login</Button>
         </NavItem>
-        <div className="divider"/>
+        <div className='divider'/>
         <NavItem>
-          <Button color="success" onClick={toggleCreate}>Create Account</Button>
+          <Button color='success' onClick={toggleCreate}>Create Account</Button>
         </NavItem>
       </div>
     );
@@ -48,7 +48,8 @@ class Header extends React.Component
 
     this.state = {
       isLoginModalOpen: false,
-      isCreateModalOpen: false
+      isCreateModalOpen: false,
+      errorMessage: ''
     };
 
     this.toggleCreateModal = this.toggleCreateModal.bind(this);
@@ -62,7 +63,8 @@ class Header extends React.Component
   toggleCreateModal()
   {
     this.setState({
-      isCreateModalOpen: !this.state.isCreateModalOpen
+      isCreateModalOpen: !this.state.isCreateModalOpen,
+      errorMessage: ''
     });
   }
 
@@ -70,7 +72,8 @@ class Header extends React.Component
   toggleLoginModal() 
   {
     this.setState({
-      isLoginModalOpen: !this.state.isLoginModalOpen
+      isLoginModalOpen: !this.state.isLoginModalOpen,
+      errorMessage: ''
     });
   }
 
@@ -78,10 +81,13 @@ class Header extends React.Component
   // calls backend to create and save new user account
   handleCreate(event)
   {
+    this.setState({
+      errorMessage: ''
+    });
     // verify that needed values have been provided
-    if(this.username.value !== "" && 
-    this.password1.value !== "" &&
-    this.password2.value !== "")
+    if(this.username.value !== '' && 
+    this.password1.value !== '' &&
+    this.password2.value !== '')
     {
       // verify that passwords provided match
       if(this.password1.value === this.password2.value)
@@ -101,24 +107,47 @@ class Header extends React.Component
           else
           {
             // if unsuccessful, notify user why in dialog
-            console.log('Account creation failed');  
+            this.setState({
+              errorMessage: res.error
+            });
           }
         })
         .catch(() => {
           // if unsuccessful, notify user why in dialog
-          console.log('Account creation failed');
+          this.setState({
+            errorMessage: 'Account creation failed'
+          });
         });
       }
       else
       {
         // if unsuccessful, notify user why in dialog
-        console.log('Passwords do not match');
+        this.setState({
+          errorMessage: 'Passwords do not match'
+        });
       }
     }
     else
     {
       // if unsuccessful, notify user why in dialog
-      console.log("Username or password not provided")
+      if(this.username.value === '')
+      {
+        this.setState({
+          errorMessage: 'Please provide a username'
+        });
+      }
+      else if(this.password1.value === '')
+      {
+        this.setState({
+          errorMessage: 'Please provide a password'
+        });
+      }
+      else if(this.password2.value === '')
+      {
+        this.setState({
+          errorMessage: 'Please confirm your password'
+        });
+      }
     }
     event.preventDefault();
   }
@@ -128,8 +157,11 @@ class Header extends React.Component
   // pass objects up to set current user and portfolio
   handleLogin(event)
   {
+    this.setState({
+      errorMessage: ''
+    });
     // verify that needed values have been provided
-    if(this.username.value !== "" && this.password.value !== "")
+    if(this.username.value !== '' && this.password.value !== '')
     {
       // call api backend to log in to account
       userLogin(this.username.value, this.password.value)
@@ -144,18 +176,34 @@ class Header extends React.Component
         else
         {
           // if unsuccessful, notify user why in dialog
-          console.log('Account login failed');  
+          this.setState({
+            errorMessage: res.error
+          });
         }
       })
       .catch(() => {
         // if unsuccessful, notify user why in dialog
-        console.log('Account login failed');
+        this.setState({
+          errorMessage: 'Account login failed'
+        });
       });
     }
     else
     {
       // if unsuccessful, notify user why in dialog
-      console.log("Username or password not provided")
+      //console.log('Username or password not provided')
+      if(this.username.value === '')
+      {
+        this.setState({
+          errorMessage: 'Please provide a username'
+        });
+      }
+      else if(this.password.value === '')
+      {
+        this.setState({
+          errorMessage: 'Please provide a password'
+        });
+      }
     }
     event.preventDefault();
   }
@@ -189,9 +237,9 @@ class Header extends React.Component
     return (
       <div>
         {/* navbar component */}
-        <Navbar dark expand="md">
+        <Navbar dark expand='md'>
           <NavbarBrand>Plutus-React</NavbarBrand>
-          <Nav className="ml-auto" navbar>
+          <Nav className='ml-auto' navbar>
             {/* dynamic rendering of login/logout/create account buttons,
                 takes user to display username when logged in,
                 takes callback functions for all buttons in navbar */}
@@ -209,18 +257,21 @@ class Header extends React.Component
           <ModalBody>
             <Form onSubmit={this.handleCreate}>
               <FormGroup>
-                <Label htmlFor="username">Username</Label>
-                <Input type="text" id="username" name="username" innerRef={(input) => this.username = input}/>
+                <Label htmlFor='username'>Username</Label>
+                <Input type='text' id='username' name='username' innerRef={(input) => this.username = input}/>
               </FormGroup>
               <FormGroup>
-                <Label htmlFor="password1">Password</Label>
-                <Input type="password" id="password1" name="password1" innerRef={(input) => this.password1 = input}/>
+                <Label htmlFor='password1'>Password</Label>
+                <Input type='password' id='password1' name='password1' innerRef={(input) => this.password1 = input}/>
               </FormGroup>
               <FormGroup>
-                <Label htmlFor="password2">Confirm your Password</Label>
-                <Input type="password" id="password2" name="password2" innerRef={(input) => this.password2 = input}/>
+                <Label htmlFor='password2'>Confirm your Password</Label>
+                <Input type='password' id='password2' name='password2' innerRef={(input) => this.password2 = input}/>
               </FormGroup>
-              <Button type="submit" value="submit" color="primary">Submit</Button>
+              <FormGroup>
+                <Label md={{ offset: 3 }} className='errorcolor' htmlFor='createerrormsg'>{this.state.errorMessage}</Label>
+              </FormGroup>
+              <Button type='submit' value='submit' color='primary'>Submit</Button>
             </Form>
           </ModalBody>
         </Modal>
@@ -230,14 +281,17 @@ class Header extends React.Component
           <ModalBody>
             <Form onSubmit={this.handleLogin}>
               <FormGroup>
-                <Label htmlFor="username">Username</Label>
-                <Input type="text" id="username" name="username" innerRef={(input) => this.username = input}/>
+                <Label htmlFor='username'>Username</Label>
+                <Input type='text' id='username' name='username' innerRef={(input) => this.username = input}/>
               </FormGroup>
               <FormGroup>
-                <Label htmlFor="password">Password</Label>
-                <Input type="password" id="password" name="password" innerRef={(input) => this.password = input}/>
+                <Label htmlFor='password'>Password</Label>
+                <Input type='password' id='password' name='password' innerRef={(input) => this.password = input}/>
               </FormGroup>
-              <Button type="submit" value="submit" color="primary">Submit</Button>
+              <FormGroup>
+                <Label md={{ offset: 3 }} className='errorcolor' htmlFor='loginerrormsg'>{this.state.errorMessage}</Label>
+              </FormGroup>
+              <Button type='submit' value='submit' color='primary'>Submit</Button>
             </Form>
           </ModalBody>
         </Modal>

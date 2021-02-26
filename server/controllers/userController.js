@@ -27,7 +27,7 @@ createUser = (req, res, next) => {
     if(user)
     {
       // clear out password field and return response with user
-      user.password = ""
+      user.password = '';
       return res.status(200).json({
         success: true,
         profile: user,
@@ -57,7 +57,7 @@ getProfile = (req, res, next) => {
       if(user === null)
       {
         // if no matching user found, return an error stating so
-        var err = new Error('User ' + username + ' does not exist!');
+        var err = new Error('User ' + req.body.username + ' does not exist!');
         err.status = 403;
         next(err);
       }
@@ -72,7 +72,7 @@ getProfile = (req, res, next) => {
       {
         // if username and password match, successfully logged in
         // clear out the password field
-        user.password = "";
+        user.password = '';
         // set the authentication token
         req.session.user = 'authenticated';
         req.session.save();

@@ -22,7 +22,7 @@ createPortfolio = (req, res, next) => {
         if(user)
         {
           // clear out password field and return response with user
-          user.password = ""
+          user.password = '';
           return res.status(200).json({
             success: true,
             profile: user,
@@ -32,6 +32,7 @@ createPortfolio = (req, res, next) => {
         else
         {
           // if user does not exist, return an error stating so
+          // should never reach this error
           var err = new Error('Current user does not exist');
           err.status = 403;
           next(err);
@@ -58,6 +59,7 @@ getPortfolio = (req, res, next) => {
     if(port === null)
     {
       // if portfolio does not exist, return an error stating so
+      // should never reach this error
       var err = new Error('Portfolio with id ' + port._id + ' does not exist!');
       err.status = 403;
       next(err);

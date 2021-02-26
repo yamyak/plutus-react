@@ -60,3 +60,7 @@ Form.detailed {
   padding-top: 15px;
   margin-left: 100px;
 }
+
+Label.errorcolor {
+  color: red
+}
