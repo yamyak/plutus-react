@@ -16,7 +16,7 @@ function RenderSelection({current, portfolios, select})
     // map portfolio names to dropdown items
     const ports = portfolios.map((portfolio) => {
       return (
-        <DropdownItem onClick={() => select(portfolio._id)}>{portfolio.name}</DropdownItem>
+        <DropdownItem key={portfolio.name} onClick={() => select(portfolio._id)}>{portfolio.name}</DropdownItem>
       );
     });
 
