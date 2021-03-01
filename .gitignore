@@ -117,3 +117,4 @@ dist
 
 # Express-sessions local files
 server/sessions/
+client/build/

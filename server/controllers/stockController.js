@@ -14,6 +14,7 @@ addStock = (req, res, next) => {
       // get the path to the python script
       var pythonPath = process.env.PLUTUS.toString() + '/StockAdd.py';
       // start the python process to create and populate the stock data
+      //const pythonProcess = spawn('python3', [pythonPath, './config.ini', req.body.ticker]);
       const pythonProcess = spawn('python', [pythonPath, './config.ini', req.body.ticker]);
       pythonProcess.stdout.on('data', (data) => {
         data = data.toString('utf8').replace(/^\s+|\s+$/g, '');

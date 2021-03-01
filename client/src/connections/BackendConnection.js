@@ -1,3 +1,6 @@
+var hostname = 'localhost';
+var port = '3000';
+
 // backend api call to create a new user account
 function createUser(usernameIn, passwordIn)
 {
@@ -5,7 +8,7 @@ function createUser(usernameIn, passwordIn)
   return new Promise((resolve, reject) => {
     // POST request to create new account
     // username and password are passed in
-    fetch('http://localhost:3000/signup', {
+    fetch('http://' + hostname + ':' + port + '/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -32,7 +35,7 @@ function userLogin(usernameIn, passwordIn)
   return new Promise((resolve, reject) => {
     // POST request to log in to account
     // username and password are passed in
-    fetch('http://localhost:3000/signin', {
+    fetch('http://' + hostname + ':' + port + '/signin', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -59,7 +62,7 @@ function userLogout()
 {
   // GET request to log out of account
   return new Promise((resolve, reject) => {
-    fetch('http://localhost:3000/signout', {
+    fetch('http://' + hostname + ':' + port + '/signout', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -83,7 +86,7 @@ function createPortfolio(idIn, nameIn)
   return new Promise((resolve, reject) => {
     // POST request to create new portfolio
     // user id and portfolio name are passed in
-    fetch('http://localhost:3000/create', {
+    fetch('http://' + hostname + ':' + port + '/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -111,7 +114,7 @@ function getPortfolio(idIn)
   return new Promise((resolve, reject) => {
     // POST request to get portfolio
     // portfolio id is passed in
-    fetch('http://localhost:3000/get', {
+    fetch('http://' + hostname + ':' + port + '/get', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -138,7 +141,7 @@ function addStock(idIn, tickerIn)
   return new Promise((resolve, reject) => {
     // POST request to add stock
     // portfolio id and ticker name are passed in
-    fetch('http://localhost:3000/add', {
+    fetch('http://' + hostname + ':' + port + '/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -166,7 +169,7 @@ function deleteStock(stockIdIn, portIdIn)
   return new Promise((resolve, reject) => {
     // POST request to add stock
     // portfolio id and stock id are passed in
-    fetch('http://localhost:3000/delete', {
+    fetch('http://' + hostname + ':' + port + '/delete', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

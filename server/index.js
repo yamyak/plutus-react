@@ -19,7 +19,7 @@ const apiPort = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 // set up CORS for frontend
-app.use(cors({origin: 'http://localhost:3006', credentials: true}));
+app.use(cors({origin: true, credentials: true}));
 app.use(bodyParser.json());
 app.use(session({
   name: 'session-id',
